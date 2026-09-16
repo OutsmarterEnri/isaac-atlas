@@ -39,12 +39,20 @@ local function snapshot(state)
     }
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
         if entity.Type == EntityType.ENTITY_PICKUP and variants[entity.Variant] then
+            local price = 0
+            pcall(function() price = entity.Price or 0 end)
             pickups[#pickups + 1] = {kind=variants[entity.Variant], subtype=entity.SubType,
-                x=entity.Position.X, y=entity.Position.Y}
+                x=entity.Position.X, y=entity.Position.Y, price=price}
         end
     end
     local level = game:GetLevel()
     local current = level:GetCurrentRoomDesc()
+    local room = {index=-1, type=0, clear=false}
+    pcall(function()
+        room.index = current and current.GridIndex or -1
+        room.type = game:GetRoom():GetType()
+        room.clear = game:GetRoom():IsClear()
+    end)
     if current and current.GridIndex then
         for i = 0, level:GetRoomCount() - 1 do
             local desc = level:GetRoomByIdx(i)
@@ -76,7 +84,7 @@ local function snapshot(state)
         stageType=game:GetLevel():GetStageType(), bossRushLimit=game.BossRushParTime,
         hushLimit=game.BlueWombParTime, megaDoor=game:GetStateFlag(GameStateFlag.STATE_MEGA_SATAN_DOOR_OPENED),
         motherDoor=game:GetStateFlag(GameStateFlag.STATE_MOTHER_HEART_DOOR_OPENED), ascent=game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH),
-        pickups=pickups, secretCandidates=secretCandidates}))
+        pickups=pickups, secretCandidates=secretCandidates, room=room}))
 end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, continued)
     active, finished, lastWrite, sequence = true, false, -1000, 0

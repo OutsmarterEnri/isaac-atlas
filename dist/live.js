@@ -1,5 +1,11 @@
 'use strict';
 let liveSnapshot=null,liveBusy=false,liveChecklist=new Set(),liveRun='';
+let debugEntries=[],debugRun='',debugRoom='',debugPickups='',debugInventory='',debugEvents='',debugMap='';
+const roomNames={0:'stanza normale',2:'negozio',5:'stanza del tesoro',6:'stanza del boss',7:'stanza segreta',8:'stanza super segreta',29:'stanza ultra segreta'};
+function debugRender(){const log=$('#debug-log'),filter=$('#debug-filter')?.value||'all';if(!log)return;const rows=debugEntries.filter(e=>filter==='all'||e.kind===filter);log.innerHTML=rows.map(e=>`<li class="debug-row debug-${e.kind}"><time>${e.time}</time><span>${escapeHTML(e.text)}</span></li>`).join('');const count=$('#debug-count');if(count)count.textContent=`${rows.length} righe mostrate · ${debugEntries.length} conservate`}
+function debugAdd(kind,text,data){debugEntries.unshift({kind,text,time:new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),frame:data?.frames});if(debugEntries.length>200)debugEntries.length=200;debugRender()}
+function pickupText(p,data){const name=p.kind==='collectible'?(catalog.find(r=>r.itemId===p.subtype)?.name||`Oggetto #${p.subtype}`):p.kind==='card'?(p.subtype===80?'Wild Card':`Carta #${p.subtype}`):p.kind==='pill'?`Pillola #${p.subtype}`:p.kind==='rune'?`Runa #${p.subtype}`:p.kind==='chest'?'Cassa':`${p.kind} #${p.subtype}`;const price=p.price?` · prezzo ${p.price}`:'';return `${name}${price} · posizione ${Math.round(p.x)},${Math.round(p.y)}`}
+function debugObserve(data){const key=`${source}:${data.slot||0}:${data.run||''}`;if(debugRun!==key){debugRun=key;debugEntries=[];debugRoom=debugPickups=debugInventory=debugEvents=debugMap='';if(data.run)debugAdd('system','Nuova run osservata',data)}const room=data.room||{};const rs=`${room.index}:${room.type}:${room.clear}`;if(rs!==debugRoom){debugRoom=rs;debugAdd('room',`Stanza ${room.index??'—'} · ${roomNames[room.type]||`tipo ${room.type??'—'}`} · ${room.clear?'pulita':'non pulita'}`,data)}const ps=JSON.stringify(data.pickups||[]);if(ps!==debugPickups){debugPickups=ps;const pickups=data.pickups||[];if(pickups.length)pickups.forEach(p=>debugAdd('pickup',`${room.type===2?'Shop · ':''}${pickupText(p,data)}`,data));else debugAdd('pickup','Nessun pickup visibile',data)}const inv=JSON.stringify([data.items||[],data.cards||[]]);if(inv!==debugInventory){debugInventory=inv;debugAdd('inventory',`Inventario aggiornato · ${(data.items||[]).length} oggetti · ${(data.cards||[]).length} carte`,data)}const ev=JSON.stringify(data.events||[]);if(ev!==debugEvents){debugEvents=ev;(data.events||[]).forEach(e=>debugAdd('system',`Evento osservato: ${e.boss} con ${e.character}`,data))}const map=JSON.stringify(data.secretCandidates||[]);if(map!==debugMap){debugMap=map;(data.secretCandidates||[]).forEach(r=>debugAdd('map',`Candidata ${r.kind} · ${Math.round(r.confidence*100)}% · ${r.direction||'mappa'}`,data))}}
 const clockText=frames=>{const s=Math.floor(frames/30);return [Math.floor(s/3600),Math.floor(s/60)%60,s%60].map(n=>String(n).padStart(2,'0')).join(':');};
 const breakerItems={166:['D20','alta','Può ricalcolare ricompense nella stanza.'],173:['Diplopia','alta','Può duplicare la ricompensa più importante.'],628:['Death Certificate','alta','Apre un’opportunità eccezionale di scelta.'],723:['Spindown Dice','alta','Può trasformare un oggetto nella catena degli ID.'],636:['R Key','alta','Può prolungare la run e moltiplicare gli obiettivi.']};
 function renderRunSignals(data){
@@ -14,6 +20,7 @@ function renderRunSignals(data){
 }
 function liveRender(data){
  liveSnapshot=data;
+ debugObserve(data);
  const labels={running:'In partita',paused:'In pausa',ended:'Partita terminata',menu:'Nel menu',stale:'Collegamento interrotto',not_connected:'Mod non collegata',error:'Lettura in attesa'};
  const statusText=labels[data.status]||'In attesa';if($('#live-status').textContent!==statusText)$('#live-status').textContent=statusText;$('#live-status').classList.toggle('connected',['running','paused'].includes(data.status));
  const active=['running','paused'].includes(data.status);
@@ -49,6 +56,8 @@ function liveRender(data){
  renderRunSignals(data);
 }
 document.addEventListener('change',e=>{if(e.target.dataset.liveCheck){const id=Number(e.target.dataset.liveCheck);if(e.target.checked)liveChecklist.add(id);else liveChecklist.delete(id);}});
+$('#debug-filter')?.addEventListener('change',debugRender);
+$('#clear-debug')?.addEventListener('click',()=>{debugEntries=[];debugRender();});
 $('#follow-live').addEventListener('click',()=>{if(liveSnapshot){$('#save-slot').value=String(liveSnapshot.slot);switchSlot();liveRender(liveSnapshot);}});
 async function pollLive(){if(liveBusy)return;liveBusy=true;try{const response=await fetch('/api/live',{cache:'no-store',signal:AbortSignal.timeout(3500)});const data=await response.json();if(!response.ok)throw Error(data.error);liveRender(data);}catch{liveRender({status:'error',message:'Il collegamento live non risponde. Riprovo automaticamente.'});}finally{liveBusy=false;}}
 pollLive();setInterval(pollLive,1500);

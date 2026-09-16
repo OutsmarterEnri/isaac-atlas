@@ -49,7 +49,10 @@ def validate(data):
             raise ValueError('Pickup live non valido.')
         if type(pickup.get('subtype',0))!=int or not 0<=pickup.get('subtype',0)<=100000:
             raise ValueError('Pickup live non valido.')
+        price=pickup.get('price',0)
+        if type(price)!=int or not -10000<=price<=10000: price=0
         clean_pickups.append({'kind':pickup['kind'],'subtype':pickup.get('subtype',0),
+                              'price':price,
                               'x':round(float(pickup.get('x',0)),1) if isinstance(pickup.get('x',0),(int,float)) else 0,
                               'y':round(float(pickup.get('y',0)),1) if isinstance(pickup.get('y',0),(int,float)) else 0})
     extra['pickups']=clean_pickups
@@ -66,6 +69,12 @@ def validate(data):
                             'direction':str(room.get('direction',''))[:12],
                             'reason':str(room.get('reason',''))[:160]})
     extra['secretCandidates']=clean_rooms
+    room=data.get('room',{})
+    if room=={}: room={}
+    if not isinstance(room,dict): raise ValueError('Stanza live non valida.')
+    index=room.get('index',-1); room_type=room.get('type',0)
+    if type(index)!=int or not -1<=index<=100000 or type(room_type)!=int or not 0<=room_type<=100: raise ValueError('Stanza live non valida.')
+    extra['room']={'index':index,'type':room_type,'clear':room.get('clear') is True}
     return extra | {k:data[k] for k in ('schema','state','frames','playerType','difficulty','stage','challenge','sequence','run')} | {
         'character':CHARACTERS.get(data['playerType'],'Personaggio moddato'),
         'items':items,'cards':cards,'custom':data.get('custom') is True,
