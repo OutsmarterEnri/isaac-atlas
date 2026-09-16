@@ -30,6 +30,35 @@ local function snapshot(state)
     observe()
     local player = Isaac.GetPlayer(0)
     local items, cards = {}, {}
+    local pickups, secretCandidates = {}, {}
+    local variants = {
+        [PickupVariant.PICKUP_COLLECTIBLE]="collectible", [PickupVariant.PICKUP_TAROTCARD]="card",
+        [PickupVariant.PICKUP_PILL]="pill", [PickupVariant.PICKUP_TRINKET]="collectible",
+        [PickupVariant.PICKUP_COIN]="coin", [PickupVariant.PICKUP_KEY]="key",
+        [PickupVariant.PICKUP_BOMB]="bomb", [PickupVariant.PICKUP_CHEST]="chest"
+    }
+    for _, entity in ipairs(Isaac.GetRoomEntities()) do
+        if entity.Type == EntityType.ENTITY_PICKUP and variants[entity.Variant] then
+            pickups[#pickups + 1] = {kind=variants[entity.Variant], subtype=entity.SubType,
+                x=entity.Position.X, y=entity.Position.Y}
+        end
+    end
+    local level = game:GetLevel()
+    local current = level:GetCurrentRoomDesc()
+    if current and current.GridIndex then
+        for i = 0, level:GetRoomCount() - 1 do
+            local desc = level:GetRoomByIdx(i)
+            if desc and desc.Data and desc.Data.Type then
+                local kind = desc.Data.Type == RoomType.ROOM_SECRET and "secret" or
+                    desc.Data.Type == RoomType.ROOM_SUPERSECRET and "supersecret" or
+                    desc.Data.Type == RoomType.ROOM_ULTRASECRET and "ultrasecret" or nil
+                if kind and desc.GridIndex ~= current.GridIndex then
+                    secretCandidates[#secretCandidates + 1] = {kind=kind, confidence=0.9,
+                        direction="mappa", reason="Tipo stanza esposto dal descrittore del livello"}
+                end
+            end
+        end
+    end
     local configs = Isaac.GetItemConfig():GetCollectibles()
     for id = 1, configs.Size - 1 do
         if player:HasCollectible(id) then items[#items + 1] = id end
@@ -46,7 +75,8 @@ local function snapshot(state)
         players=game:GetNumPlayers(), items=items, cards=cards, events=events, seed=seed,
         stageType=game:GetLevel():GetStageType(), bossRushLimit=game.BossRushParTime,
         hushLimit=game.BlueWombParTime, megaDoor=game:GetStateFlag(GameStateFlag.STATE_MEGA_SATAN_DOOR_OPENED),
-        motherDoor=game:GetStateFlag(GameStateFlag.STATE_MOTHER_HEART_DOOR_OPENED), ascent=game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH)}))
+        motherDoor=game:GetStateFlag(GameStateFlag.STATE_MOTHER_HEART_DOOR_OPENED), ascent=game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH),
+        pickups=pickups, secretCandidates=secretCandidates}))
 end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, continued)
     active, finished, lastWrite, sequence = true, false, -1000, 0

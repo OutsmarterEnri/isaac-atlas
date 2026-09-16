@@ -371,3 +371,7 @@ L’operazione gira in background e conserva soltanto le immagini necessarie in 
 Oggetti e trinket vengono associati tramite gli ID dei file XML locali; gli altri segreti usano la relativa immagine achievement. I simboli di completamento sono ritagli visualizzati dal foglio originale, senza modificare i PNG. Sono icone degli obiettivi, **non una certificazione del relativo mark Normal/Hard**. Delirium mantiene un simbolo Atlas perché nel gioco il suo completamento cambia il foglio.
 
 Il repository, gli screenshot pubblici e lo ZIP non includono immagini ufficiali, XML estratti, cache o l’estrattore del gioco. I diritti degli asset restano ai rispettivi titolari. Se l’estrattore manca, l’importazione non riesce o un’immagine non è disponibile, resta la grafica Atlas.
+
+## Assistenza contestuale della run
+
+La modalità live aiuta a scegliere tra le opportunità che la run offre, senza imporre un percorso. Pickup speciali, combinazioni interessanti e stanze segrete vengono mostrati con una confidenza e una motivazione. Un segnale può essere confermato, molto probabile, probabile, possibile o non valutabile; non modifica la mappa, non apre porte e non certifica da solo un achievement.

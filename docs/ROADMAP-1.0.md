@@ -17,3 +17,15 @@
 - Revisione del contenuto dell’archivio, licenze delle dipendenze e documentazione.
 
 Finché mancano prove reali rappresentative, il pacchetto è una **release candidate**, non una promessa di compatibilità universale. La copertura di note e prerequisiti resta dichiaratamente selettiva anche nella 1.0.
+
+## Direzione successiva: assistenza contestuale
+
+Il passo successivo non è un percorso rigido per la run. Il live assistant deve massimizzare le opportunità nate dalla partita corrente:
+
+- pickup visibili con rilevanza alta, media o bassa;
+- sinergie tra inventario, carte e oggetti lasciati nella stanza;
+- candidati Secret, Super Secret e Ultra Secret con confidenza e motivazione;
+- obiettivi ancora possibili, obiettivi persi e decisioni che richiedono una scelta;
+- fallback prudente quando un dato non è leggibile.
+
+Le percentuali descrivono l’evidenza disponibile, non una certezza ottenuta leggendo o modificando file interni. La Bridge osserva lo stato esposto dall’API mod e scrive solo il proprio snapshot.

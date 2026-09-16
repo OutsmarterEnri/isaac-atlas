@@ -40,6 +40,32 @@ def validate(data):
         if value is not None and (type(value)!=int or not 0<=value<=2147483647):raise ValueError('Contatore live non valido.')
         extra[key]=value
     for key in ('megaDoor','motherDoor','ascent'):extra[key]=data.get(key) is True
+    pickups=data.get('pickups',[])
+    if pickups=={}:pickups=[]
+    if not isinstance(pickups,list) or len(pickups)>128:raise ValueError('Pickup live non validi.')
+    clean_pickups=[]
+    for pickup in pickups:
+        if not isinstance(pickup,dict) or pickup.get('kind') not in ('collectible','card','rune','pill','coin','key','bomb','chest'):
+            raise ValueError('Pickup live non valido.')
+        if type(pickup.get('subtype',0))!=int or not 0<=pickup.get('subtype',0)<=100000:
+            raise ValueError('Pickup live non valido.')
+        clean_pickups.append({'kind':pickup['kind'],'subtype':pickup.get('subtype',0),
+                              'x':round(float(pickup.get('x',0)),1) if isinstance(pickup.get('x',0),(int,float)) else 0,
+                              'y':round(float(pickup.get('y',0)),1) if isinstance(pickup.get('y',0),(int,float)) else 0})
+    extra['pickups']=clean_pickups
+    rooms=data.get('secretCandidates',[])
+    if rooms=={}:rooms=[]
+    if not isinstance(rooms,list) or len(rooms)>32:raise ValueError('Candidati stanza non validi.')
+    clean_rooms=[]
+    for room in rooms:
+        if not isinstance(room,dict) or room.get('kind') not in ('secret','supersecret','ultrasecret'):
+            raise ValueError('Candidato stanza non valido.')
+        confidence=room.get('confidence',0)
+        if not isinstance(confidence,(int,float)) or not 0<=confidence<=1:raise ValueError('Confidenza non valida.')
+        clean_rooms.append({'kind':room['kind'],'confidence':round(float(confidence),2),
+                            'direction':str(room.get('direction',''))[:12],
+                            'reason':str(room.get('reason',''))[:160]})
+    extra['secretCandidates']=clean_rooms
     return extra | {k:data[k] for k in ('schema','state','frames','playerType','difficulty','stage','challenge','sequence','run')} | {
         'character':CHARACTERS.get(data['playerType'],'Personaggio moddato'),
         'items':items,'cards':cards,'custom':data.get('custom') is True,
