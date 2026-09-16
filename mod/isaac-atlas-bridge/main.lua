@@ -36,7 +36,7 @@ local function snapshot(state)
         [PickupVariant.PICKUP_PILL]="pill", [PickupVariant.PICKUP_TRINKET]="collectible",
         [PickupVariant.PICKUP_COIN]="coin", [PickupVariant.PICKUP_KEY]="key",
         [PickupVariant.PICKUP_BOMB]="bomb", [PickupVariant.PICKUP_CHEST]="chest",
-        [PickupVariant.PICKUP_HEART]="heart", [PickupVariant.PICKUP_GRAB_BAG]="bag"
+        [PickupVariant.PICKUP_HEART]="heart"
     }
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
         if entity.Type == EntityType.ENTITY_PICKUP and variants[entity.Variant] then
