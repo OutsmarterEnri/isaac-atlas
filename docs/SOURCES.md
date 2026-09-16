@@ -38,10 +38,19 @@ Il [catalogo completo](../dist/data/catalog.json) conserva i collegamenti wiki e
 
 ## Fonte esclusa dalla distribuzione pubblica
 
-[External Item Descriptions, commit consultato](https://github.com/wofsauge/External-Item-Descriptions/tree/b6010e390ef2f429d4d4659974a5d505fba89b43): descrizioni italiane e inglesi e interazioni utilizzate nella versione locale precedente. Le tabelle importate non sono incluse nella beta pubblica; `notes.json` contiene un archivio vuoto esplicitamente identificato.
+[External Item Descriptions, commit consultato](https://github.com/wofsauge/External-Item-Descriptions/tree/b6010e390ef2f429d4d4659974a5d505fba89b43): descrizioni italiane e inglesi e interazioni utilizzate nella versione locale precedente. Le tabelle importate non sono incluse nella distribuzione pubblica. Nella candidata 1.0, `notes.json` contiene soltanto alcune nuove sintesi originali, ciascuna con fonte e ambito dichiarati.
 
 ## Aggiornamento e attribuzione
 
 Ultima consultazione dei contenuti annotata nel catalogo delle strategie: 2026-09-15. Questo documento elenca la provenienza; non certifica che ogni pagina sia immutata o che tutte le meccaniche siano state nuovamente verificate nella patch corrente.
 
 I casi d’uso sono riassunti originali. Nomi e immagini del gioco restano dei rispettivi titolari. Condizioni di distribuzione e materiali esclusi sono descritti in [THIRD_PARTY.md](../THIRD_PARTY.md).
+
+## Pianificatore, eventi e nuova interfaccia desktop
+
+- [Chest](https://bindingofisaacrebirth.wiki.gg/wiki/The_Chest), [Dark Room](https://bindingofisaacrebirth.wiki.gg/wiki/Dark_Room), [The Void](https://bindingofisaacrebirth.wiki.gg/wiki/The_Void), [Corpse](https://bindingofisaacrebirth.wiki.gg/wiki/Corpse), [A Strange Door](https://bindingofisaacrebirth.wiki.gg/wiki/A_Strange_Door), [Greed Mode](https://bindingofisaacrebirth.wiki.gg/wiki/Greed_Mode): riferimenti dei percorsi standard; le condizioni sono esplicite nelle proposte.
+- [EntityType](https://wofsauge.github.io/IsaacDocs/rep/enums/EntityType.html), [GameStateFlag](https://wofsauge.github.io/IsaacDocs/rep/enums/GameStateFlag.html): identificatori e segnali usati dalla Bridge, confrontati con gli enum dell’installazione del gioco senza ridistribuirne i file.
+- [API pywebview](https://pywebview.flowrl.com/api/): finestra, cartelle e profilo persistente del desktop.
+- [PyInstaller](https://pyinstaller.org/): distribuzione Windows con runtime incluso.
+
+Le sintesi originali in `notes.json` riportano direttamente fonte, ambito e data di verifica documentale. Non sono descrizioni estratte da EID.

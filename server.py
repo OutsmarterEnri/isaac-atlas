@@ -3,12 +3,14 @@ from pathlib import Path
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlsplit, parse_qs
 from datetime import datetime, timezone
-import argparse, hashlib, json, os, struct, webbrowser
+import argparse, hashlib, json, os, struct, webbrowser, secrets
 
 from discovery import save_path, source_info
 from live import live_state
 
-ROOT = Path(__file__).resolve().parent
+from runtime import ROOT, VERSION
+from settings import read_settings, write_config, install_bridge, diagnostics
+SESSION_TOKEN = secrets.token_urlsafe(32)
 CRC_TABLE = json.loads((ROOT / 'crc_table.json').read_text())
 
 def parse_save(data):
@@ -63,6 +65,16 @@ class Handler(SimpleHTTPRequestHandler):
         if self.headers.get('Sec-Fetch-Site') == 'cross-site':
             self.send_error(403); return
         route = urlsplit(self.path).path
+        if route == '/api/session':
+            self.respond(200, {'token':SESSION_TOKEN,'version':VERSION}); return
+        if route == '/api/settings':
+            try: self.respond(200, read_settings())
+            except (ValueError,OSError): self.respond(503, {'error':'Configurazione non leggibile.'})
+            return
+        if route == '/api/diagnostics':
+            try: self.respond(200, diagnostics())
+            except (ValueError,OSError): self.respond(503, {'error':'Diagnostica non disponibile: controlla la configurazione.'})
+            return
         if route == '/api/sources':
             try: self.respond(200, {'sources': source_info()})
             except (ValueError, OSError): self.respond(503, {'error':'Rilevamento non disponibile.'})
@@ -83,6 +95,26 @@ class Handler(SimpleHTTPRequestHandler):
                 self.respond(503, {'error': 'File non leggibile. Riprovo tra 5 secondi.'})
             return
         super().do_GET()
+    def do_POST(self):
+        host=self.headers.get('Host','')
+        allowed={f'127.0.0.1:{self.server.server_port}',f'localhost:{self.server.server_port}'}
+        if host not in allowed or self.headers.get('Sec-Fetch-Site')=='cross-site' or self.headers.get('Origin') not in (None,'http://'+host):
+            self.respond(403,{'error':'Origine non consentita.'});return
+        if not secrets.compare_digest(self.headers.get('X-Atlas-Token',''),SESSION_TOKEN):
+            self.respond(403,{'error':'Sessione non valida. Ricarica la pagina.'});return
+        try:
+            size=int(self.headers.get('Content-Length','0'))
+            if not 0<size<=16384 or self.headers.get_content_type()!='application/json':raise ValueError('Richiesta non valida.')
+            data=json.loads(self.rfile.read(size))
+            route=urlsplit(self.path).path
+            if route=='/api/settings':result=write_config(data)
+            elif route=='/api/bridge/install':
+                if not isinstance(data,dict) or set(data)-{'game_directory','update'} or not isinstance(data.get('game_directory',''),str) or type(data.get('update',False)) is not bool:raise ValueError('Richiesta non valida.')
+                result=install_bridge(data.get('game_directory',''),data.get('update',False))
+            else:self.respond(404,{'error':'Operazione non disponibile.'});return
+            self.respond(200,result)
+        except (ValueError,TypeError):self.respond(400,{'error':'Operazione non riuscita: controlla le cartelle e, per una Bridge esistente, scegli Aggiorna.'})
+        except OSError:self.respond(503,{'error':'Impossibile scrivere la configurazione o installare la Bridge. Verifica i permessi della cartella.'})
     def respond(self, status, payload):
         body = json.dumps(payload).encode()
         self.send_response(status)

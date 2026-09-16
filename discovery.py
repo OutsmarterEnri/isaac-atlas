@@ -2,7 +2,7 @@
 from pathlib import Path
 import os, re, json, hashlib
 
-ROOT = Path(__file__).resolve().parent
+from runtime import ROOT, config_path
 
 def native_path(value):
     value = str(value).replace('\\', '/')
@@ -11,8 +11,10 @@ def native_path(value):
     return Path(value).expanduser()
 
 def config():
-    p = ROOT / 'config.json'
-    return json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
+    p = config_path()
+    value=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
+    if not isinstance(value,dict):raise ValueError('La configurazione deve essere un oggetto JSON.')
+    return value
 
 def unique(paths):
     return list(dict.fromkeys(p.resolve() for p in paths if p.exists()))

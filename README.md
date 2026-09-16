@@ -8,7 +8,7 @@
 
 Trova quello che ti manca, prepara la prossima run e segui la partita dal browser.
 
-**Beta · Python 3.10+ · Windows verificato · GPL-3.0-only**
+**1.0.0-rc.1 · Desktop Windows / Python 3.10+ · GPL-3.0-only**
 
 [Installazione](#installazione) · [Configurazione](#configurazione) · [Modalità live](#modalità-live) · [Fonti](#fonti-e-attribuzioni) · [Problemi comuni](#problemi-comuni)
 
@@ -17,6 +17,14 @@ Trova quello che ti manca, prepara la prossima run e segui la partita dal browse
 ![Isaac Atlas: obiettivi di una run e catalogo degli sblocchi, con dati dimostrativi](preview.png)
 
 > Progetto non ufficiale, eseguito sul tuo computer. Non richiede un account, non invia i progressi online e non modifica i salvataggi del gioco. La mod opzionale scrive soltanto i propri dati di collegamento.
+
+## Verso la 1.0
+
+La candidata 1.0 aggiunge **configurazione guidata, pianificazione delle run, eventi live, preferiti trasferibili e app desktop Windows**. Stato delle verifiche e limiti: [milestone](docs/ROADMAP-1.0.md), [changelog](CHANGELOG.md).
+
+**App desktop:** quando il pacchetto è disponibile negli asset della release, estrai l’intero ZIP e avvia `IsaacAtlas.exe`. Python è incluso. Requisiti WebView2, configurazione e compilazione: [guida desktop](docs/DESKTOP.md).
+
+**Da sorgente:** restano validi i comandi Python descritti sotto. Non confondere una release candidate con un rilascio già pubblicato: gli archivi locali e il workflow di build non creano automaticamente una release GitHub.
 
 ## Cosa offre
 
@@ -32,7 +40,7 @@ I contatori misurano **segreti**, non singoli oggetti: un segreto può assegnare
 
 ### Contenuto della prima beta pubblica
 
-Questa distribuzione include il catalogo degli sblocchi, le note originali sui casi d’uso e i collegamenti alle wiki. **Non include gli sprite del gioco né le descrizioni importate da External Item Descriptions**, in attesa di chiarire i diritti di redistribuzione. Dove manca una descrizione, la scheda rimanda alla guida completa. Le note sulle sinergie sono selettive, non esaustive.
+Questa distribuzione include il catalogo degli sblocchi, le note originali sui casi d’uso e i collegamenti alle wiki. **Non include gli sprite del gioco né le descrizioni importate da External Item Descriptions**, in attesa di chiarire i diritti di redistribuzione. Sono incluse alcune nuove descrizioni originali con fonte e data di verifica documentale. Dove manca una descrizione, la scheda rimanda alla guida completa. Le note sulle sinergie sono selettive, non esaustive.
 
 ## Requisiti e compatibilità
 
@@ -106,6 +114,12 @@ La prima lettura deve terminare con lo stato **“Slot … sincronizzato”**. U
 
 ## Configurazione
 
+### Procedura guidata
+
+Apri **Configurazione e diagnostica**. Puoi lasciare i percorsi vuoti per il rilevamento automatico oppure indicare le due cartelle e premere **Salva configurazione**. Nel desktop, **Scegli cartella** apre il selettore nativo; nel browser incolla il percorso. Il report diagnostico esportabile non contiene percorsi, identificativi Steam, seed o contenuti dei salvataggi.
+
+Per la modalità live, chiudi Isaac, seleziona **Ho chiuso il gioco**, poi **Installa Bridge** o **Aggiorna Bridge**. Riavvia il gioco e abilita la mod. Le operazioni di scrittura riguardano solo configurazione Atlas e file della Bridge, protette da un token della sessione locale.
+
 ### Rilevamento automatico
 
 Di norma non devi creare alcun file di configurazione. Il lettore:
@@ -144,7 +158,7 @@ Su Linux usa `cp config.example.json config.json`. Modifica `config.json` con un
 
 La cartella Steam contiene normalmente `rep+persistentgamedata1.dat`, `rep+persistentgamedata2.dat` e `rep+persistentgamedata3.dat`. Nella cartella locale `Documenti/My Games/Binding of Isaac Repentance+` i nomi supportati sono `persistentgamedata1.dat`, `persistentgamedata2.dat` e `persistentgamedata3.dat`.
 
-È possibile impostare solo uno dei due campi. L’installatore della mod ha un’opzione separata `--game-directory`: **non legge il campo omonimo da `config.json`**. Vedi i comandi nella sezione successiva.
+È possibile impostare solo uno dei due campi. Anche l’installatore usa `game_directory` da `config.json`; l’opzione `--game-directory` permette di indicare esplicitamente un’altra cartella. Vedi i comandi nella sezione successiva.
 
 Per una posizione Steam non standard puoi anche impostare `STEAM_PATH` prima dell’avvio; viene aggiunta alle posizioni cercate, senza sostituirle:
 
@@ -153,7 +167,7 @@ $env:STEAM_PATH = "D:/Steam"
 py -3 launch.py
 ```
 
-`config.json` è ignorato da Git. Non aggiungerlo al repository né allegarlo integralmente a una segnalazione: può contenere percorsi e identificativi personali.
+`config.json` è ignorato da Git. Nel desktop compilato si trova nella cartella dati privata, non accanto all’eseguibile. Non aggiungerlo al repository né allegarlo integralmente a una segnalazione: può contenere percorsi e identificativi personali.
 
 ## Modalità live
 
@@ -189,11 +203,13 @@ Riavvia Isaac, abilita **Isaac Atlas Bridge** nel menu **Mods**, avvia una run e
 
 Se la partita usa uno slot diverso da quello selezionato, Atlas mostra l’avviso e il comando per passare allo slot corretto. Non usa i progressi di uno slot per suggerire obiettivi di un altro.
 
+I promemoria usano i limiti ordinari comunicati dal gioco: superarli non viene presentato come impossibilità assoluta, perché possono esistere eccezioni.
+
 La mod aggiorna circa ogni secondo il proprio `saveX.dat`; il gioco assegna il numero di slot. Atlas interroga lo stato live ogni **1,5 secondi**. Dopo **8 secondi** senza un file aggiornato, timer e obiettivi live vengono nascosti: il browser non fa avanzare un timer presunto.
 
 ### Limiti attuali
 
-- La checklist **non conferma automaticamente** boss sconfitti o prerequisiti: le spunte si azzerano quando cambia la sessione della run o ricarichi la pagina.
+- Le spunte della checklist rimangono manuali. Separatamente, la Bridge 1.0 rileva alcuni boss/eventi: Atlas mostra **evento osservato**, **accesso rilevato** o **sblocco confermato dal save**. Un evento boss da solo non dimostra tutti i requisiti di una ricompensa. Le spunte si azzerano al cambio sessione o al ricaricamento.
 - I suggerimenti non verificano ancora tutti i percorsi accessibili, gli eventi già avvenuti o l’idoneità agli achievement.
 - Per **sfide, seed personalizzati, cooperativa e più profili rilevati**, gli obiettivi automatici sono sospesi. La mod identifica lo slot, non l’account Steam.
 - I personaggi aggiunti da altre mod non vengono associati automaticamente agli obiettivi vanilla.
@@ -202,7 +218,7 @@ La mod aggiorna circa ogni secondo il proprio `saveX.dat`; il gioco assegna il n
 
 ### Aggiornamento e rimozione
 
-Per aggiornare la mod, a gioco chiuso:
+Puoi aggiornarla dal pannello Configurazione, oppure, a gioco chiuso:
 
 ```powershell
 py -3 install_bridge.py --update
@@ -212,6 +228,14 @@ Aggiungi `--game-directory "percorso"` se necessario. Senza `--update`, una cart
 
 Per rimuoverla, disabilitala nel menu Mods e, a gioco chiuso, elimina soltanto `mods/isaac-atlas-bridge`. Se vuoi eliminare anche i suoi dati, rimuovi la sola cartella `data/isaac-atlas-bridge` ove presente. Non cancellare la cartella `data` intera o i salvataggi persistenti di Isaac. Il taccuino degli sblocchi continua a funzionare senza la mod.
 
+## Pianifica una run
+
+Apri **Pianifica una run**, scegli personaggio, difficoltà e, facoltativamente, un obiettivo principale. Oppure usa **Pianifica questo obiettivo** nel dettaglio di una ricompensa. Atlas esclude gli sblocchi già confermati e ordina le proposte dando priorità ai preferiti.
+
+Ogni proposta distingue tappe principali e opzionali, mostra un percorso standard, elenca prerequisiti da controllare e cita la guida. Chest e Dark Room, Mother e Home non vengono uniti come se fossero un unico percorso ordinario. Gli obiettivi cumulativi o non riconducibili alle regole del planner restano nel catalogo.
+
+Il planner non certifica l’accessibilità di ogni area sul salvataggio: i metodi alternativi, i portali casuali e tutte le eccezioni non sono simulati.
+
 ## Uso del taccuino
 
 - **Sblocchi:** nasconde inizialmente i segreti già ottenuti; disattiva “Nascondi sbloccati” per vedere tutto.
@@ -220,6 +244,7 @@ Per rimuoverla, disabilitala nel menu Mods e, a gioco chiuso, elimina soltanto `
 - **Per personaggio / Sfide:** consulta gli obiettivi delle due categorie.
 - **Da provare:** usa il segnalibro sulle schede. I preferiti rimangono visibili anche dopo lo sblocco, insieme alle note disponibili.
 - **Dettaglio:** apri una scheda per requisito, testo originale, eventuali note e link alle fonti.
+- **Preferiti trasferibili:** esporta lo slot corrente e importa il file sul browser/PC di destinazione. L’importazione aggiunge gli ID validi allo slot collegato, senza cancellare i preferiti esistenti.
 - **Sincronizzazione:** il salvataggio viene riletto ogni **5 secondi**; il pulsante di aggiornamento richiede una nuova lettura.
 
 I preferiti sono locali al browser e separati per sorgente e slot. Cambiare browser, indirizzo (`localhost` invece di `127.0.0.1`) o porta crea un contesto di memorizzazione diverso. I preferiti dei vecchi slot vengono recuperati quando è rilevata una sola sorgente; non vengono assegnati automaticamente a un profilo ambiguo.
@@ -332,3 +357,7 @@ Il codice è distribuito sotto **GNU GPL v3 (`GPL-3.0-only`)**. Leggi [LICENSE](
 Isaac Atlas non è affiliato agli autori o agli editori di The Binding of Isaac, a Steam, alle wiki o ai progetti citati. Nomi e marchi appartengono ai rispettivi titolari. Non vengono distribuiti eseguibili, DLL o asset grafici del gioco.
 
 Per la prima pubblicazione del repository: [checklist di rilascio](RELEASE_CHECKLIST.md).
+
+## Bacheca illustrata
+
+I simboli dei boss filtrano il catalogo con un clic e mostrano il numero di ricompense associate sbloccate. Il filtro personaggio aggiorna i conteggi; un secondo clic rimuove il filtro boss. Non sono una lettura dei completion mark Normal/Hard del gioco. La versione pubblica include illustrazioni SVG originali; gli sprite eventualmente presenti nella copia locale non vengono redistribuiti.

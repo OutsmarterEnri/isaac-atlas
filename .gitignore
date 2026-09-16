@@ -9,3 +9,8 @@ __pycache__/
 node_modules/
 test-results/
 playwright-report/
+build/
+release/
+*.spec
+browser/
+smoke-ok.txt

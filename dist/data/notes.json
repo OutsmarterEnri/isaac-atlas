@@ -1,1 +1,95 @@
-{"entries": {}, "distribution": "public-beta-without-eid"}
+{
+  "distribution": "original-summaries",
+  "entries": {
+    "610": {
+      "nameIt": "Wild Card",
+      "language": "it",
+      "description": [
+        "Ripete l’effetto dell’ultimo consumabile o oggetto attivo utilizzato. La sequenza delle attivazioni determina che cosa verrà copiato."
+      ],
+      "descriptionSource": {
+        "title": "Wiki di Isaac · Wild Card",
+        "url": "https://bindingofisaacrebirth.wiki.gg/wiki/Wild_Card"
+      },
+      "interactions": [],
+      "reviewed": "2026-09-15",
+      "scope": "Repentance / Repentance+",
+      "verification": "Sintesi originale; controllo documentale, non test di tutte le patch."
+    },
+    "584": {
+      "nameIt": "Spindown Dice",
+      "language": "it",
+      "description": [
+        "Trasforma gli oggetti sui piedistalli seguendo l’ordine decrescente degli ID interni, saltando gli oggetti non validi o non ancora sbloccati."
+      ],
+      "descriptionSource": {
+        "title": "Wiki di Isaac · Spindown Dice",
+        "url": "https://bindingofisaacrebirth.wiki.gg/wiki/Spindown_Dice"
+      },
+      "interactions": [],
+      "reviewed": "2026-09-15",
+      "scope": "Repentance / Repentance+",
+      "verification": "Sintesi originale; controllo documentale, non test di tutte le patch."
+    },
+    "636": {
+      "nameIt": "Death Certificate",
+      "language": "it",
+      "description": [
+        "Porta in un’area di selezione degli oggetti: puoi scegliere una ricompensa prima di tornare alla run."
+      ],
+      "descriptionSource": {
+        "title": "Wiki di Isaac · Death Certificate",
+        "url": "https://bindingofisaacrebirth.wiki.gg/wiki/Death_Certificate"
+      },
+      "interactions": [],
+      "reviewed": "2026-09-15",
+      "scope": "Repentance / Repentance+",
+      "verification": "Sintesi originale; controllo documentale, non test di tutte le patch."
+    },
+    "433": {
+      "nameIt": "Rock Bottom",
+      "language": "it",
+      "description": [
+        "Mantiene le statistiche mostrate ai massimi raggiunti da quando lo raccogli; i valori sottostanti continuano a cambiare e influenzano gli aumenti successivi."
+      ],
+      "descriptionSource": {
+        "title": "Wiki di Isaac · Rock Bottom",
+        "url": "https://bindingofisaacrebirth.wiki.gg/wiki/Rock_Bottom"
+      },
+      "interactions": [],
+      "reviewed": "2026-09-15",
+      "scope": "Repentance / Repentance+",
+      "verification": "Sintesi originale; controllo documentale, non test di tutte le patch."
+    },
+    "121": {
+      "nameIt": "Blank Card",
+      "language": "it",
+      "description": [
+        "Riproduce l’effetto della carta selezionata senza consumarla. La carta deve essere nello slot attivo del consumabile."
+      ],
+      "descriptionSource": {
+        "title": "Wiki di Isaac · Blank Card",
+        "url": "https://bindingofisaacrebirth.wiki.gg/wiki/Blank_Card"
+      },
+      "interactions": [],
+      "reviewed": "2026-09-15",
+      "scope": "Repentance / Repentance+",
+      "verification": "Sintesi originale; controllo documentale, non test di tutte le patch."
+    },
+    "472": {
+      "nameIt": "Magic Skin",
+      "language": "it",
+      "description": [
+        "Genera un oggetto pagando salute e aggiungendo un cuore spezzato. L’uso ripetuto riduce la capacità di sopravvivenza e può causare sostituzioni di oggetti successive."
+      ],
+      "descriptionSource": {
+        "title": "Wiki di Isaac · Magic Skin",
+        "url": "https://bindingofisaacrebirth.wiki.gg/wiki/Magic_Skin"
+      },
+      "interactions": [],
+      "reviewed": "2026-09-15",
+      "scope": "Repentance / Repentance+",
+      "verification": "Sintesi originale; controllo documentale, non test di tutte le patch."
+    }
+  }
+}

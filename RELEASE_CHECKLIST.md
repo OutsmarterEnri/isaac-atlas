@@ -40,3 +40,7 @@ La directory `isaac-atlas-public` preparata è il contenuto del repository pubbl
 7. Controlla l’esito della CI nella scheda Actions e la resa di README, anteprima e collegamenti. La configurazione CI presente non prova da sola che un’esecuzione remota sia passata.
 
 Nessun repository remoto è creato da questi script; nessun push è automatico. La beta pubblica iniziale ha descrizioni ridotte rispetto all'installazione locale, finché i diritti dei materiali esclusi non saranno chiariti.
+
+## Candidata 1.0
+
+Il workflow `Windows desktop build` genera l’archivio portatile e il checksum. Le note per la prerelease sono in [docs/RELEASE-1.0.md](docs/RELEASE-1.0.md). Il pacchetto va associato allo stesso sorgente che lo ha generato; non distribuire un binario senza rendere disponibile il codice corrispondente. `release/` resta fuori da Git: gli archivi appartengono agli asset della release, non alla cronologia dei sorgenti.

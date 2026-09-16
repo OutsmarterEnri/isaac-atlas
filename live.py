@@ -14,7 +14,7 @@ def bridge_files():
             for p in (root/folder/'isaac-atlas-bridge').glob('save[123].dat')]
 
 def validate(data):
-    if not isinstance(data,dict) or data.get('schema')!=1:raise ValueError('Versione bridge non supportata.')
+    if not isinstance(data,dict) or data.get('schema') not in (1,2):raise ValueError('Versione bridge non supportata.')
     if data.get('state') not in ('running','paused','ended','menu'):raise ValueError('Stato non valido.')
     for key in ('frames','playerType','difficulty','stage','challenge','sequence'):
         value=data.get(key)
@@ -27,7 +27,20 @@ def validate(data):
     cards=data.get('cards',[])
     if cards=={}:cards=[]
     if not isinstance(cards,list) or len(cards)>4 or any(type(i)!=int or i<0 or i>100000 for i in cards):raise ValueError('Carte non valide.')
-    return {k:data[k] for k in ('schema','state','frames','playerType','difficulty','stage','challenge','sequence','run')} | {
+    events=data.get('events',[])
+    if events=={}:events=[]
+    if not isinstance(events,list) or len(events)>128:raise ValueError('Eventi non validi.')
+    clean_events=[]
+    for event in events:
+        if not isinstance(event,dict) or not isinstance(event.get('boss'),str) or len(event['boss'])>40 or type(event.get('playerType'))!=int:raise ValueError('Evento non valido.')
+        clean_events.append({'boss':event['boss'],'character':CHARACTERS.get(event['playerType'],'Personaggio moddato')})
+    extra={'events':clean_events,'bridgeVersion':str(data.get('bridgeVersion','0.1'))[:20]}
+    for key in ('bossRushLimit','hushLimit','stageType'):
+        value=data.get(key)
+        if value is not None and (type(value)!=int or not 0<=value<=2147483647):raise ValueError('Contatore live non valido.')
+        extra[key]=value
+    for key in ('megaDoor','motherDoor','ascent'):extra[key]=data.get(key) is True
+    return extra | {k:data[k] for k in ('schema','state','frames','playerType','difficulty','stage','challenge','sequence','run')} | {
         'character':CHARACTERS.get(data['playerType'],'Personaggio moddato'),
         'items':items,'cards':cards,'custom':data.get('custom') is True,
         'players':data.get('players',1) if type(data.get('players',1))==int else 1}

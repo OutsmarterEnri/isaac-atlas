@@ -7,6 +7,7 @@ FILES=['CONTRIBUTING.md', 'SECURITY.md', 'docs/ARCHITECTURE.md', 'docs/SOURCES.m
        'dist/index.html','dist/style.css','dist/app.js','dist/live.js','dist/favicon.svg','dist/data/strategies.json',
        'mod/isaac-atlas-bridge/main.lua','mod/isaac-atlas-bridge/metadata.xml',
        'tests/test_atlas.py','tests/browser.cjs','tests/README.md','scripts/prepare_public.py']
+FILES += ['dist/visuals.js','docs/RELEASE-1.0.md','dist/credits.html','runtime.py', 'settings.py', 'desktop.py', 'requirements-desktop.txt', 'CHANGELOG.md', 'docs/DESKTOP.md', 'docs/ROADMAP-1.0.md', 'dist/planner-core.js', 'dist/planner.js', 'dist/settings.js', 'tests/test_release.py', 'tests/test_bridge.py', 'tests/planner.cjs', 'tests/v1-browser.cjs', 'scripts/build_windows.py', '.github/workflows/windows-build.yml', '.github/workflows/tests.yml', 'dist/data/notes.json']
 
 def export(destination):
     dest=Path(destination).resolve()
@@ -17,30 +18,12 @@ def export(destination):
     catalog=json.loads((ROOT/'dist/data/catalog.json').read_text())
     for row in catalog:row['icon']=None
     (dest/'dist/data/catalog.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2),encoding='utf-8')
-    (dest/'dist/data/notes.json').write_text('{"entries": {}, "distribution": "public-beta-without-eid"}\n')
+    notes=json.loads((ROOT/'dist/data/notes.json').read_text(encoding='utf-8'))
+    if notes.get('distribution')!='original-summaries':raise ValueError('Esporta soltanto le sintesi originali approvate, non tabelle EID.')
     p=dest/'dist/index.html';html=p.read_text(encoding='utf-8').replace('src="assets/achievements/637.png"','src="favicon.svg"').replace('alt="Dead God, traguardo del taccuino"','alt="Isaac Atlas"');p.write_text(html,encoding='utf-8')
-    (dest/'dist/credits.html').write_text('''<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fonti · Isaac Atlas</title><link rel="stylesheet" href="style.css"><main><a href="/">← Isaac Atlas</a><h1>Fonti e attribuzioni</h1><p>Progetto non ufficiale. Codice GPL-3.0-only.</p><h2>Catalogo degli sblocchi</h2><p>Derivato da <a href="https://github.com/Zamiell/isaac-save-viewer">Isaac Save Viewer · Zamiell</a>, GPL-3.0, con modifiche documentate in THIRD_PARTY.md.</p><h2>Guide</h2><p>Le note originali sui casi d’uso rimandano alle pagine della wiki consultate. I contenuti sono selettivi e possono cambiare con le patch.</p><h2>Prima beta pubblica</h2><p>Sprite e descrizioni importate da EID sono esclusi in attesa di chiarire i diritti di redistribuzione. Le guide complete restano raggiungibili dalle schede. Nomi e marchi del gioco appartengono ai rispettivi titolari.</p></main></html>''',encoding='utf-8')
-    (dest/'.gitignore').write_text('config.json\n__pycache__/\n*.py[cod]\n*.dat\n*.log\n.env\n.env.*\n.venv/\nnode_modules/\ntest-results/\nplaywright-report/\n')
+    shutil.copyfile(ROOT/'dist/credits.html',dest/'dist/credits.html')
+    (dest/'.gitignore').write_text('config.json\n__pycache__/\n*.py[cod]\n*.dat\n*.log\n.env\n.env.*\n.venv/\nbuild/\nrelease/\n*.spec\nbrowser/\nsmoke-ok.txt\nnode_modules/\ntest-results/\nplaywright-report/\n')
     (dest/'.gitattributes').write_text('* text=auto\n*.py text eol=lf\n*.js text eol=lf\n*.lua text eol=lf\n*.cmd text eol=crlf\n')
-    workflow=dest/'.github/workflows/tests.yml';workflow.parent.mkdir(parents=True,exist_ok=True)
-    workflow.write_text('''name: Tests
-on: [push, pull_request]
-permissions:
-  contents: read
-jobs:
-  python:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        python: ['3.10', '3.13']
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-      - run: python -m unittest discover -s tests -v
-''')
     print('Distribuzione pubblica preparata: configurazioni, salvataggi, artwork ed EID esclusi.')
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('destination');args=parser.parse_args();export(args.destination)

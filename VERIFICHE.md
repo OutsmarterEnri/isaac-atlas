@@ -1,15 +1,26 @@
-# Verifiche della beta
+# Verifiche di Isaac Atlas 1.0.0-rc.1
 
-## Automatiche
+Verifica del 16 settembre 2026 su Windows x64 con Steam Repentance+.
 
-- Parser: struttura, checksum, file troncati, tre slot distinti e lettura senza modifiche.
-- Rilevamento: librerie Steam aggiuntive, più profili con scelta esplicita, salvataggi locali quando Steam Cloud è disattivato.
-- HTTP: Host e richieste cross-site rifiutati, configurazione non esposta, errori senza percorsi privati.
-- Live: schema, dimensioni massime, file incompleti, slot, stato running/paused/ended/menu e scadenza dei dati.
-- Browser: timer, checklist manuale, cambio slot, run speciali, profili separati, dettaglio e assenza di overflow a 375/768/1440 pixel.
+## Automatiche: superate
 
-Comandi e dipendenze opzionali in `tests/README.md`. Tutti i dati dei test distribuiti sono sintetici.
+- **17 test Python/Lua**: integrità e lettura dei tre slot, rilevamento librerie/profili, isolamento HTTP, validazione live, configurazione atomica e installazione/aggiornamento Bridge. Simulazioni Lua per stanza libera, trasformazioni nel Void, Greedier, cambio personaggio e ripresa run.
+- **Planner JavaScript**: compatibilità percorsi, preferiti, esclusione sblocchi acquisiti e attribuzione eventi.
+- **Browser con dati sintetici**: planner, osservato/confermato, scadenze, importazione valida/non valida, esportazione, configurazione, procedura Bridge, vista compatta e layout a 375/768/1440 pixel.
+- **Pacchetto Windows compilato**: servizio autonomo, catalogo di 641 voci, apertura WebView2 e API nativa con profili temporanei, senza interprete Python esterno.
+
+Comandi in [tests/README.md](tests/README.md). I test distribuiti usano dati sintetici. La suite browser simula le API e non sostituisce le prove della mod nel gioco.
 
 ## Verifica reale
 
-Il collegamento con la mod è stato provato su Windows e Steam Repentance+: il servizio riceve personaggio, slot e timer di una run effettiva. Nessun file personale viene incluso come fixture. Questa prova non copre tutte le modalità, i personaggi, i sistemi operativi o ogni combinazione di mod.
+Il collegamento originario è stato provato in una run su Windows e Steam Repentance+. Dopo l’aggiornamento è stato rilevato anche uno snapshot reale **schema 2 / Bridge 1.0.0**, con slot e personaggio: conferma scrittura e lettura del nuovo protocollo. Lo snapshot era scaduto all’ultima verifica e non conteneva eventi boss; non dimostra il rilevamento di tutti i boss.
+
+Nessun salvataggio personale è incluso come fixture o nel pacchetto.
+
+## Prima della versione stabile
+
+- Provare eventi boss, uscita e ripresa in run reali rappresentative.
+- Provare installazione e rilevamento su un secondo PC/utente.
+- Verificare la CI sul commit da pubblicare.
+
+La release candidate non certifica tutte le combinazioni di mod, personaggi o sistemi operativi.

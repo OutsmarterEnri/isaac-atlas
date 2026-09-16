@@ -13,7 +13,7 @@
 | `dist/live.js` | Stato live, confronto dello slot, checklist e suggerimenti basati sulle note. |
 | `mod/isaac-atlas-bridge/main.lua` | Esportazione dello stato della run attraverso le API Lua del gioco. |
 
-Non ci sono database o servizi esterni richiesti. Tutti gli endpoint sono di sola lettura. L'API è interna alla beta e può cambiare; non è un servizio pubblico autenticato.
+Non ci sono database o servizi esterni richiesti. Gli endpoint GET leggono i dati; due operazioni di configurazione/installazione sono protette dal token di sessione (vedi sotto). L'API è interna alla beta e può cambiare; non è un servizio pubblico autenticato.
 
 ## Endpoint
 
@@ -36,7 +36,7 @@ Un checksum valido indica integrità del file, non autenticità dell'acquisto o 
 
 ### Stato live
 
-Lo snapshot della mod usa `schema: 1`. Campi esportati: `state`, `sequence`, `run`, `frames`, `playerType`, `difficulty`, `stage`, `challenge`, `custom`, `players`, `items` e `cards`. Il servizio aggiunge `character`, `slot`, `age` in secondi e `status`.
+La Bridge 1.0 usa `schema: 2`; il lettore continua ad accettare schema 1 con funzionalità live ridotte. Campi esportati: `state`, `sequence`, `run`, `frames`, `playerType`, `difficulty`, `stage`, `challenge`, `custom`, `players`, `items` e `cards`. Il servizio aggiunge `character`, `slot`, `age` in secondi e `status`.
 
 - `frames` viene da `Game().TimeCounter`; la visualizzazione converte 30 frame in un secondo.
 - `run` è un identificatore di sessione ottenuto dal seed e dal tempo di avvio rilevato dalla mod; serve ad azzerare la checklist. Non identifica un account.
@@ -77,3 +77,15 @@ La Bridge scrive soltanto i suoi file `save1.dat`, `save2.dat`, `save3.dat`. Il 
 ## Confini della beta
 
 Il gioco assegna lo slot alla mod, ma non fornisce al collegamento un'identità Steam verificata. Con più sorgenti rilevate vengono sospesi i suggerimenti automatici; scegliere un profilo non prova l'associazione alla run. Il filtro degli obiettivi usa personaggio e difficoltà, senza simulare il percorso completo della partita.
+
+## API aggiuntive nella candidata 1.0
+
+- `GET /api/session`: versione e token temporaneo della sessione locale.
+- `GET /api/settings`: percorsi della configurazione privata; destinato solo all’interfaccia locale.
+- `GET /api/diagnostics`: riepilogo condivisibile senza percorsi o account.
+- `POST /api/settings`: oggetto con `save_directory` e `game_directory`, validazione e sostituzione atomica del file di configurazione.
+- `POST /api/bridge/install`: `game_directory` opzionale e `update` booleano; copia esclusivamente i due file della Bridge.
+
+I POST richiedono JSON, corpo fino a 16 KiB, `X-Atlas-Token`, Host locale e Origin coerente quando presente. Non forniscono scritture arbitrarie o comandi shell.
+
+Schema 2 aggiunge `events`, `bridgeVersion`, `stageType`, `bossRushLimit`, `hushLimit` e segnali `megaDoor`, `motherDoor`, `ascent`. Il backend normalizza il personaggio associato a ciascun evento. Le transizioni dei flag Boss Rush/Hush non vengono riattribuite a un personaggio successivo. Per NPC riconosciuti si attende lo svuotamento della stanza, limitando il rilevamento ai piani previsti; resta una copertura selettiva, non un sostituto dei marchi persistenti.

@@ -30,3 +30,13 @@ Implementazione originale basata sulla documentazione della community:
 - https://wofsauge.github.io/IsaacDocs/rep/EntityPlayer.html
 
 Nessun SDK, eseguibile o DLL del gioco è incluso.
+
+## Desktop e build
+
+La distribuzione desktop usa [pywebview](https://github.com/r0x0r/pywebview), [Python](https://www.python.org/), pythonnet e dipendenze di runtime. È compilata con [PyInstaller](https://pyinstaller.org/), il cui bootloader prevede una specifica eccezione di distribuzione. Versioni e testi di licenza rilevati nell’ambiente di build vengono raccolti nella cartella `third-party-licenses` del pacchetto, insieme alla licenza Python. Microsoft WebView2 è un prerequisito di sistema, non viene redistribuito dal progetto.
+
+Le nuove descrizioni in `notes.json` sono brevi sintesi originali basate sulle fonti collegate, con ambito e data della verifica documentale; non sono una reintroduzione delle tabelle EID.
+
+## Illustrazioni Atlas
+
+I pittogrammi SVG di `dist/visuals.js` sono disegni originali del progetto, distribuiti con la licenza del codice. Sono simboli di navigazione e categorie, non sprite ufficiali né riproduzioni dei completion mark. Gli sprite già presenti in una copia locale restano separati dal repository pubblico.
