@@ -36,7 +36,7 @@ Un checksum valido indica integrità del file, non autenticità dell'acquisto o 
 
 ### Stato live
 
-La Bridge 1.0 usa `schema: 2`; il lettore continua ad accettare schema 1 con funzionalità live ridotte. Campi esportati: `state`, `sequence`, `run`, `frames`, `playerType`, `difficulty`, `stage`, `challenge`, `custom`, `players`, `items` e `cards`. Il servizio aggiunge `character`, `slot`, `age` in secondi e `status`.
+La Bridge 1.0 usa `schema: 2`; il lettore continua ad accettare schema 1 con funzionalità live ridotte. Oltre allo stato della run, esporta `room` (indice, tipo e stanza pulita), `pickups` (tipo, subtype, coordinate e prezzo), `secretCandidates`, eventi, inventario e carte. Il servizio valida e limita ogni campo prima di aggiungere `character`, `slot`, `age` in secondi e `status`. La UI offre un registro filtrabile delle osservazioni; conserva solo le ultime 200 righe nella memoria del browser e non legge pixel o memoria del processo.
 
 - `frames` viene da `Game().TimeCounter`; la visualizzazione converte 30 frame in un secondo.
 - `run` è un identificatore di sessione ottenuto dal seed e dal tempo di avvio rilevato dalla mod; serve ad azzerare la checklist. Non identifica un account.

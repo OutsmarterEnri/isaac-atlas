@@ -189,6 +189,10 @@ L’installatore copia esclusivamente `main.lua` e `metadata.xml` in `mods/isaac
 
 Riavvia Isaac, abilita **Isaac Atlas Bridge** nel menu **Mods**, avvia una run e lascia Atlas aperto. Non è necessario abilitare la console di debug o usare `--luadebug`.
 
+### Registro diagnostico
+
+Apri **Registro di ciò che Atlas osserva** sotto il pannello live per vedere, riga per riga, le osservazioni ricevute dalla Bridge: stanza corrente e stato di pulizia, pickup a terra (con coordinate e prezzo quando disponibili), inventario, carte, eventi boss e candidati per Secret/Super Secret/Ultra Secret Room. Il registro è filtrabile e conserva al massimo 200 righe nella sessione del browser; non acquisisce screenshot, non legge la memoria del gioco e non modifica la partita.
+
 > Su slot nuovi, verifica nel gioco l’idoneità agli achievement quando usi mod. Atlas non certifica che una run possa sbloccare segreti e non modifica le regole del gioco.
 
 ### Cosa vedrai
