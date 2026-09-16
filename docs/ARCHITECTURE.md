@@ -93,3 +93,6 @@ Schema 2 aggiunge `events`, `bridgeVersion`, `stageType`, `bossRushLimit`, `hush
 ## Immagini locali
 
 `local_art.py` esegue importazioni in background, una alla volta. `POST /api/art/import` richiede il token di sessione e un oggetto vuoto. `GET /api/art/status` e `/api/art/manifest` restituiscono stato e mapping; `/api/art/image/<sha256>.png` serve esclusivamente PNG con nome hash dalla cache privata. La directory statica `dist` non contiene asset importati. Il filelist ufficiale viene filtrato per immagini e indici necessari, senza estrarre video o audio. I percorsi passati all’estrattore usano slash forward su Windows.
+
+
+Il registro diagnostico lato browser conserva solo le ultime osservazioni della sessione e non viene scritto nei salvataggi: mostra cambio stanza, pickup e segnali della mappa derivati dal singolo snapshot.

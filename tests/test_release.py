@@ -39,8 +39,8 @@ class ReleaseTests(unittest.TestCase):
         finally:httpd.shutdown();httpd.server_close();thread.join()
     def test_schema_two_validation(self):
         from test_atlas import snapshot
-        value=snapshot();value.update(schema=2,events=[{'boss':'Hush','playerType':30}],bossRushLimit=36000,hushLimit=54000)
-        clean=live.validate(value);self.assertEqual(clean['events'][0]['character'],'Tainted Eden')
+        value=snapshot();value.update(schema=2,events=[{'boss':'Hush','playerType':30}],pickups=[{'kind':'collectible','subtype':166,'x':10,'y':20}],secretCandidates=[{'kind':'ultrasecret','confidence':0.72,'direction':'mappa','reason':'Tre collegamenti'}],bossRushLimit=36000,hushLimit=54000)
+        clean=live.validate(value);self.assertEqual(clean['events'][0]['character'],'Tainted Eden');self.assertEqual(clean['pickups'][0]['subtype'],166);self.assertEqual(clean['secretCandidates'][0]['confidence'],0.72)
         value['events']=[{'boss':'Hush','playerType':'not a number'}]
         with self.assertRaises(ValueError):live.validate(value)
 
