@@ -35,7 +35,8 @@ local function snapshot(state)
         [PickupVariant.PICKUP_COLLECTIBLE]="collectible", [PickupVariant.PICKUP_TAROTCARD]="card",
         [PickupVariant.PICKUP_PILL]="pill", [PickupVariant.PICKUP_TRINKET]="collectible",
         [PickupVariant.PICKUP_COIN]="coin", [PickupVariant.PICKUP_KEY]="key",
-        [PickupVariant.PICKUP_BOMB]="bomb", [PickupVariant.PICKUP_CHEST]="chest"
+        [PickupVariant.PICKUP_BOMB]="bomb", [PickupVariant.PICKUP_CHEST]="chest",
+        [PickupVariant.PICKUP_HEART]="heart", [PickupVariant.PICKUP_GRAB_BAG]="bag"
     }
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
         if entity.Type == EntityType.ENTITY_PICKUP and variants[entity.Variant] then
@@ -57,12 +58,14 @@ local function snapshot(state)
         for i = 0, level:GetRoomCount() - 1 do
             local desc = level:GetRoomByIdx(i)
             if desc and desc.Data and desc.Data.Type then
-                local kind = desc.Data.Type == RoomType.ROOM_SECRET and "secret" or
-                    desc.Data.Type == RoomType.ROOM_SUPERSECRET and "supersecret" or
-                    desc.Data.Type == RoomType.ROOM_ULTRASECRET and "ultrasecret" or nil
+                local roomType = desc.Data.Type
+                local kind = roomType == RoomType.ROOM_SECRET and "secret" or
+                    roomType == RoomType.ROOM_SUPERSECRET and "supersecret" or
+                    roomType == RoomType.ROOM_ULTRASECRET and "ultrasecret" or nil
                 if kind and desc.GridIndex ~= current.GridIndex then
                     secretCandidates[#secretCandidates + 1] = {kind=kind, confidence=0.9,
-                        direction="mappa", reason="Tipo stanza esposto dal descrittore del livello"}
+                        direction="mappa", index=desc.GridIndex,
+                        reason="Tipo stanza esposto dal descrittore del livello"}
                 end
             end
         end

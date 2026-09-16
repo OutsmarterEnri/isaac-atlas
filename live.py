@@ -45,7 +45,7 @@ def validate(data):
     if not isinstance(pickups,list) or len(pickups)>128:raise ValueError('Pickup live non validi.')
     clean_pickups=[]
     for pickup in pickups:
-        if not isinstance(pickup,dict) or pickup.get('kind') not in ('collectible','card','rune','pill','coin','key','bomb','chest'):
+        if not isinstance(pickup,dict) or pickup.get('kind') not in ('collectible','card','rune','pill','coin','key','bomb','chest','heart','bag'):
             raise ValueError('Pickup live non valido.')
         if type(pickup.get('subtype',0))!=int or not 0<=pickup.get('subtype',0)<=100000:
             raise ValueError('Pickup live non valido.')
@@ -65,7 +65,9 @@ def validate(data):
             raise ValueError('Candidato stanza non valido.')
         confidence=room.get('confidence',0)
         if not isinstance(confidence,(int,float)) or not 0<=confidence<=1:raise ValueError('Confidenza non valida.')
-        clean_rooms.append({'kind':room['kind'],'confidence':round(float(confidence),2),
+        room_index=room.get('index',-1)
+        if type(room_index)!=int or not -1<=room_index<=100000: raise ValueError('Indice stanza non valido.')
+        clean_rooms.append({'kind':room['kind'],'confidence':round(float(confidence),2),'index':room_index,
                             'direction':str(room.get('direction',''))[:12],
                             'reason':str(room.get('reason',''))[:160]})
     extra['secretCandidates']=clean_rooms
