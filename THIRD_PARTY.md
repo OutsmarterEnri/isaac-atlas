@@ -40,3 +40,7 @@ Le nuove descrizioni in `notes.json` sono brevi sintesi originali basate sulle f
 ## Illustrazioni Atlas
 
 I pittogrammi SVG di `dist/visuals.js` sono disegni originali del progetto, distribuiti con la licenza del codice. Sono simboli di navigazione e categorie, non sprite ufficiali né riproduzioni dei completion mark. Gli sprite già presenti in una copia locale restano separati dal repository pubblico.
+
+## Asset locali opzionali
+
+Atlas può importare immagini dalla copia del gioco installata dall’utente usando il ResourceExtractor fornito con Isaac. Immagini, file XML e ResourceExtractor non fanno parte del repository o del pacchetto distribuito e non vengono concessi sotto GPL da Atlas. I diritti restano ai titolari del gioco. Questa separazione descrive il funzionamento del progetto, non costituisce un’autorizzazione generale al riutilizzo degli asset.

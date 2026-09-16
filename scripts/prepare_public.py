@@ -7,7 +7,7 @@ FILES=['CONTRIBUTING.md', 'SECURITY.md', 'docs/ARCHITECTURE.md', 'docs/SOURCES.m
        'dist/index.html','dist/style.css','dist/app.js','dist/live.js','dist/favicon.svg','dist/data/strategies.json',
        'mod/isaac-atlas-bridge/main.lua','mod/isaac-atlas-bridge/metadata.xml',
        'tests/test_atlas.py','tests/browser.cjs','tests/README.md','scripts/prepare_public.py']
-FILES += ['dist/visuals.js','docs/RELEASE-1.0.md','dist/credits.html','runtime.py', 'settings.py', 'desktop.py', 'requirements-desktop.txt', 'CHANGELOG.md', 'docs/DESKTOP.md', 'docs/ROADMAP-1.0.md', 'dist/planner-core.js', 'dist/planner.js', 'dist/settings.js', 'tests/test_release.py', 'tests/test_bridge.py', 'tests/planner.cjs', 'tests/v1-browser.cjs', 'scripts/build_windows.py', '.github/workflows/windows-build.yml', '.github/workflows/tests.yml', 'dist/data/notes.json']
+FILES += ['tests/art-browser.cjs','local_art.py','tests/test_local_art.py','dist/visuals.js','docs/RELEASE-1.0.md','dist/credits.html','runtime.py', 'settings.py', 'desktop.py', 'requirements-desktop.txt', 'CHANGELOG.md', 'docs/DESKTOP.md', 'docs/ROADMAP-1.0.md', 'dist/planner-core.js', 'dist/planner.js', 'dist/settings.js', 'tests/test_release.py', 'tests/test_bridge.py', 'tests/planner.cjs', 'tests/v1-browser.cjs', 'scripts/build_windows.py', '.github/workflows/windows-build.yml', '.github/workflows/tests.yml', 'dist/data/notes.json']
 
 def export(destination):
     dest=Path(destination).resolve()
@@ -22,7 +22,7 @@ def export(destination):
     if notes.get('distribution')!='original-summaries':raise ValueError('Esporta soltanto le sintesi originali approvate, non tabelle EID.')
     p=dest/'dist/index.html';html=p.read_text(encoding='utf-8').replace('src="assets/achievements/637.png"','src="favicon.svg"').replace('alt="Dead God, traguardo del taccuino"','alt="Isaac Atlas"');p.write_text(html,encoding='utf-8')
     shutil.copyfile(ROOT/'dist/credits.html',dest/'dist/credits.html')
-    (dest/'.gitignore').write_text('config.json\n__pycache__/\n*.py[cod]\n*.dat\n*.log\n.env\n.env.*\n.venv/\nbuild/\nrelease/\n*.spec\nbrowser/\nsmoke-ok.txt\nnode_modules/\ntest-results/\nplaywright-report/\n')
+    (dest/'.gitignore').write_text('local-assets/\nconfig.json\n__pycache__/\n*.py[cod]\n*.dat\n*.log\n.env\n.env.*\n.venv/\nbuild/\nrelease/\n*.spec\nbrowser/\nsmoke-ok.txt\nnode_modules/\ntest-results/\nplaywright-report/\n')
     (dest/'.gitattributes').write_text('* text=auto\n*.py text eol=lf\n*.js text eol=lf\n*.lua text eol=lf\n*.cmd text eol=crlf\n')
     print('Distribuzione pubblica preparata: configurazioni, salvataggi, artwork ed EID esclusi.')
 if __name__=='__main__':

@@ -89,3 +89,7 @@ Il gioco assegna lo slot alla mod, ma non fornisce al collegamento un'identità 
 I POST richiedono JSON, corpo fino a 16 KiB, `X-Atlas-Token`, Host locale e Origin coerente quando presente. Non forniscono scritture arbitrarie o comandi shell.
 
 Schema 2 aggiunge `events`, `bridgeVersion`, `stageType`, `bossRushLimit`, `hushLimit` e segnali `megaDoor`, `motherDoor`, `ascent`. Il backend normalizza il personaggio associato a ciascun evento. Le transizioni dei flag Boss Rush/Hush non vengono riattribuite a un personaggio successivo. Per NPC riconosciuti si attende lo svuotamento della stanza, limitando il rilevamento ai piani previsti; resta una copertura selettiva, non un sostituto dei marchi persistenti.
+
+## Immagini locali
+
+`local_art.py` esegue importazioni in background, una alla volta. `POST /api/art/import` richiede il token di sessione e un oggetto vuoto. `GET /api/art/status` e `/api/art/manifest` restituiscono stato e mapping; `/api/art/image/<sha256>.png` serve esclusivamente PNG con nome hash dalla cache privata. La directory statica `dist` non contiene asset importati. Il filelist ufficiale viene filtrato per immagini e indici necessari, senza estrarre video o audio. I percorsi passati all’estrattore usano slash forward su Windows.

@@ -32,3 +32,7 @@ body{background:radial-gradient(ellipse at 80% 0,#33382955,transparent 55%),#141
 @media(min-width:1500px){.objective-marks{grid-template-columns:repeat(12,minmax(0,1fr))}}
 @media(max-width:600px){.marks-panel{padding:14px}.marks-heading{align-items:flex-start;flex-direction:column}.marks-heading h3{font-size:21px}.objective-marks{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.item-image{width:54px;height:54px;flex-basis:54px}.item-image img{width:46px;height:46px}.card-bottom{flex-wrap:wrap}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+
+.reward-art{position:relative;overflow:hidden}.reward-art>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;padding:5px;background:#303727}.reward-art:has(>img)>.atlas-glyph{visibility:hidden}.official-mark{background:#eadcba;border:1px solid #c7b585;border-radius:5px;image-rendering:pixelated;overflow:hidden}.detail-illustration.reward-art{float:right}#art-status{font-size:13px;color:#d5cfba}
+
+.reward-art.achievement-art{background:#eadcba}.reward-art.achievement-art>img{background:#eadcba;padding:1px}.detail-illustration.achievement-art{float:none;width:263px;max-width:100%;height:176px;margin:0 0 16px}.detail-illustration.achievement-art>img{object-fit:contain}

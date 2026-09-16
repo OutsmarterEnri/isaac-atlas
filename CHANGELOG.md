@@ -27,3 +27,10 @@ Le note e la valutazione di accessibilità restano selettive. La release candida
 - Cornici per sprite locali, pittogrammi per le categorie pubbliche e dettagli illustrati.
 - Stati selezionato/completato distinguibili anche senza colore; layout responsive e rispetto del movimento ridotto.
 - La bacheca non interpreta i conteggi come completion mark Normal/Hard.
+
+## 1.0.0-rc.2
+
+- Importazione locale opzionale degli sprite ufficiali attraverso l’estrattore già installato con Isaac.
+- Cache privata, manifest atomico, importazione in background e aggiornamento dall’interfaccia.
+- Immagini per oggetti/achievement e simboli di completamento; grafica Atlas come alternativa.
+- Asset e strumenti del gioco esclusi da Git e dalle distribuzioni.

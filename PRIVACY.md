@@ -13,3 +13,7 @@
 Le operazioni POST di configurazione e installazione Bridge richiedono il token della sessione e un’origine locale consentita. La pagina Configurazione mostra i percorsi scelti dall’utente sul suo stesso PC; il report diagnostico esportato li esclude. Non condividere screenshot di quei campi senza oscurarli.
 
 Il desktop usa `%LOCALAPPDATA%/IsaacAtlas` per configurazione e profilo WebView2. I file dei preferiti esportati contengono soltanto formato, versione, slot e ID dei segreti, senza percorsi o account.
+
+## Immagini del gioco
+
+L’importazione delle immagini legge l’installazione scelta e avvia soltanto il suo ResourceExtractor, senza connessioni di rete. I PNG vengono conservati nella cache privata `local-assets`, serviti esclusivamente dal server locale. Il manifest pubblico dell’API contiene ID e URL locali, senza percorsi del PC. La cache non viene inviata a GitHub e non è inclusa nei report diagnostici.

@@ -10,3 +10,5 @@ Browser, opzionale: avvia il server; installa Playwright in un ambiente di svilu
 - Planner: `node tests/planner.cjs` (nessuna dipendenza npm).
 - Flussi nuovi: `node tests/v1-browser.cjs` con Playwright; porta predefinita 8768, modificabile tramite `ATLAS_URL`.
 - Desktop: `IsaacAtlas.exe --smoke-test` verifica servizio e catalogo; `--ui-smoke-test` apre e chiude automaticamente WebView2. Per isolare i dati, imposta `ATLAS_DATA_DIR` a una cartella temporanea prima di avviarli. Il test crea un file di esito nella cartella dati.
+
+Immagini locali: `node tests/art-browser.cjs` con Playwright e server sulla porta 8769 (o `ATLAS_URL`). Usa PNG e risposte sintetiche. I test Python `test_local_art.py` verificano parser, mapping e confini HTTP senza richiedere Isaac.

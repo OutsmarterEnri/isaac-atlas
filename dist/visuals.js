@@ -1,5 +1,12 @@
 /* Original Atlas vector artwork. No game sprites embedded. */
 'use strict';
+let localArtwork={rewards:{},marks:{}};
+async function loadLocalArtwork(){
+ try{const response=await fetch('/api/art/manifest',{cache:'no-store'});if(response.ok){const value=await response.json();if(value.version===1&&value.rewards&&value.marks)localArtwork=value;}}catch{}
+}
+function localImageURL(value){return /^\/api\/art\/image\/[a-f0-9]{64}\.png$/.test(value||'')?value:null;}
+function rewardArtClass(r){return localArtwork.rewards[r.id]?.kind==='achievement'?' achievement-art':'';}
+function rewardImage(r){return localImageURL(localArtwork.rewards[r.id]?.url)||r.icon;}
 const AtlasArt=(()=>{
  const shapes={
  heart:'<path d="M32 53 11 32C-2 14 23 4 32 20 41 4 66 14 53 32Z"/><path d="m20 25 8 8-4 8"/>',
@@ -25,7 +32,8 @@ const AtlasArt=(()=>{
  const marks=["Mom's Heart",'Isaac','Satan','???','The Lamb','Boss Rush','Hush','Mega Satan','Delirium','Mother','The Beast','Ultra Greedier'];
  function svg(key,cls='atlas-glyph'){return `<svg class="${cls}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${shapes[key]||shapes.star}</svg>`;}
  function reward(r){const key=/dice/i.test(r.name)?'dice':/card/i.test(r.name)?'card':r.category==='Oggetti'?'item':r.category==='Trinket'?'trinket':'star';return svg(key);}
- return {svg,reward,bosses,marks};
+ function mark(boss){const a=localArtwork.marks[boss];if(!a||!localImageURL(a.url)||!Array.isArray(a.crop)||a.crop.length!==4||a.crop.some(n=>!Number.isInteger(n)||n<0)||!a.crop[2]||!a.crop[3])return svg(bosses[boss]);const [x,y,w,h]=a.crop;return `<svg class="atlas-glyph official-mark" viewBox="${x} ${y} ${w} ${h}" aria-hidden="true"><image href="${a.url}" width="${Number(a.width)}" height="${Number(a.height)}"/></svg>`;}
+ return {svg,reward,bosses,marks,mark};
 })();
 function renderObjectiveBoard(){
  const el=document.querySelector('#objective-marks');if(!el)return;
@@ -36,7 +44,10 @@ function renderObjectiveBoard(){
   const rows=catalog.filter(r=>r.bosses.includes(b)&&(!character||r.character===character));
   const done=rows.filter(unlocked).length,active=document.querySelector('#boss').value===b;
   const status=!rows.length?'Nessuna ricompensa associata':done===rows.length?'Ricompense completate':`${done} di ${rows.length} ricompense sbloccate`;
-  return `<button class="objective-mark ${rows.length&&done===rows.length?'complete':''}" data-objective="${escapeHTML(b)}" aria-pressed="${active}" aria-label="${escapeHTML(b+': '+status)}" title="${escapeHTML(status)}">${AtlasArt.svg(AtlasArt.bosses[b])}<span>${escapeHTML(b)}</span><small>${rows.length?done+' / '+rows.length:'—'}</small></button>`;
+  return `<button class="objective-mark ${rows.length&&done===rows.length?'complete':''}" data-objective="${escapeHTML(b)}" aria-pressed="${active}" aria-label="${escapeHTML(b+': '+status)}" title="${escapeHTML(status)}">${AtlasArt.mark(b)}<span>${escapeHTML(b)}</span><small>${rows.length?done+' / '+rows.length:'—'}</small></button>`;
  }).join('');
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-objective]');if(!b)return;const select=document.querySelector('#boss');select.value=select.value===b.dataset.objective?'':b.dataset.objective;limit=48;render();document.querySelector('#results').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});});
+
+// An unavailable local image leaves the original illustration visible.
+document.addEventListener('error',e=>{if(e.target.tagName==='IMG'&&e.target.closest('.reward-art'))e.target.remove();},true);

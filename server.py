@@ -9,6 +9,7 @@ from discovery import save_path, source_info
 from live import live_state
 
 from runtime import ROOT, VERSION
+import local_art
 from settings import read_settings, write_config, install_bridge, diagnostics
 SESSION_TOKEN = secrets.token_urlsafe(32)
 CRC_TABLE = json.loads((ROOT / 'crc_table.json').read_text())
@@ -65,6 +66,14 @@ class Handler(SimpleHTTPRequestHandler):
         if self.headers.get('Sec-Fetch-Site') == 'cross-site':
             self.send_error(403); return
         route = urlsplit(self.path).path
+        if route == '/api/art/manifest':
+            self.respond(200,local_art.manifest());return
+        if route == '/api/art/status':
+            self.respond(200,local_art.status());return
+        if route.startswith('/api/art/image/'):
+            try:body=local_art.image_bytes(route.removeprefix('/api/art/image/'))
+            except (OSError,ValueError):self.send_error(404);return
+            self.send_response(200);self.send_header('Content-Type','image/png');self.send_header('Content-Length',str(len(body)));self.send_header('Cache-Control','private, max-age=86400');self.end_headers();self.wfile.write(body);return
         if route == '/api/session':
             self.respond(200, {'token':SESSION_TOKEN,'version':VERSION}); return
         if route == '/api/settings':
@@ -107,13 +116,16 @@ class Handler(SimpleHTTPRequestHandler):
             if not 0<size<=16384 or self.headers.get_content_type()!='application/json':raise ValueError('Richiesta non valida.')
             data=json.loads(self.rfile.read(size))
             route=urlsplit(self.path).path
-            if route=='/api/settings':result=write_config(data)
+            if route=='/api/art/import':
+                if data!={}:raise ValueError('Richiesta non valida.')
+                result=local_art.start_import()
+            elif route=='/api/settings':result=write_config(data)
             elif route=='/api/bridge/install':
                 if not isinstance(data,dict) or set(data)-{'game_directory','update'} or not isinstance(data.get('game_directory',''),str) or type(data.get('update',False)) is not bool:raise ValueError('Richiesta non valida.')
                 result=install_bridge(data.get('game_directory',''),data.get('update',False))
             else:self.respond(404,{'error':'Operazione non disponibile.'});return
             self.respond(200,result)
-        except (ValueError,TypeError):self.respond(400,{'error':'Operazione non riuscita: controlla le cartelle e, per una Bridge esistente, scegli Aggiorna.'})
+        except (ValueError,TypeError):self.respond(400,{'error':'Importazione non avviata: salva la cartella corretta di Isaac in Configurazione.' if urlsplit(self.path).path=='/api/art/import' else 'Operazione non riuscita: controlla le cartelle e, per una Bridge esistente, scegli Aggiorna.'})
         except OSError:self.respond(503,{'error':'Impossibile scrivere la configurazione o installare la Bridge. Verifica i permessi della cartella.'})
     def respond(self, status, payload):
         body = json.dumps(payload).encode()

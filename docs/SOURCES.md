@@ -54,3 +54,8 @@ I casi d’uso sono riassunti originali. Nomi e immagini del gioco restano dei r
 - [PyInstaller](https://pyinstaller.org/): distribuzione Windows con runtime incluso.
 
 Le sintesi originali in `notes.json` riportano direttamente fonte, ambito e data di verifica documentale. Non sono descrizioni estratte da EID.
+
+## Importazione immagini locali
+
+- [IsaacDocs — Getting Started](https://wofsauge.github.io/IsaacDocs/rep/faq/GettingStarted.html): ResourceExtractor e aggiornamento dopo patch.
+- Mapping delle immagini verificato sui file `items.xml`, `achievements.xml` e `completion_widget.anm2` della propria installazione. Questi file non vengono redistribuiti.

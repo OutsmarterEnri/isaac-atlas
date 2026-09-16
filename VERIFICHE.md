@@ -24,3 +24,9 @@ Nessun salvataggio personale è incluso come fixture o nel pacchetto.
 - Verificare la CI sul commit da pubblicare.
 
 La release candidate non certifica tutte le combinazioni di mod, personaggi o sistemi operativi.
+
+## Importazione locale — rc.2
+
+Verificati su Windows: avvio dall’API, estrazione selettiva con lo strumento del gioco, 641 immagini di ricompense e 11 simboli recuperati dall’installazione Repentance+. Delirium conserva il simbolo Atlas. Il server non scrive nei file del gioco.
+
+La suite Python/Lua conta ora **22 test**, inclusi mapping con immagini sintetiche, rifiuto di percorsi non consentiti, XML/PNG non validi, protezione della POST e mantenimento del manifest precedente su errore. Browser: immagini locali, ritagli dei simboli, dettaglio, fallback su immagine mancante e comando di importazione. Nessun asset ufficiale è incluso nelle fixture distribuite.

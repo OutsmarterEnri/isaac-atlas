@@ -14,3 +14,6 @@ release/
 *.spec
 browser/
 smoke-ok.txt
+
+# Private game artwork: never redistribute.
+local-assets/

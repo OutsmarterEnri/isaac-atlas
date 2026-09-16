@@ -8,7 +8,7 @@
 
 Trova quello che ti manca, prepara la prossima run e segui la partita dal browser.
 
-**1.0.0-rc.1 · Desktop Windows / Python 3.10+ · GPL-3.0-only**
+**1.0.0-rc.2 · Desktop Windows / Python 3.10+ · GPL-3.0-only**
 
 [Installazione](#installazione) · [Configurazione](#configurazione) · [Modalità live](#modalità-live) · [Fonti](#fonti-e-attribuzioni) · [Problemi comuni](#problemi-comuni)
 
@@ -361,3 +361,13 @@ Per la prima pubblicazione del repository: [checklist di rilascio](RELEASE_CHECK
 ## Bacheca illustrata
 
 I simboli dei boss filtrano il catalogo con un clic e mostrano il numero di ricompense associate sbloccate. Il filtro personaggio aggiorna i conteggi; un secondo clic rimuove il filtro boss. Non sono una lettura dei completion mark Normal/Hard del gioco. La versione pubblica include illustrazioni SVG originali; gli sprite eventualmente presenti nella copia locale non vengono redistribuiti.
+
+## Immagini ufficiali dall’installazione locale
+
+Apri **Configurazione e diagnostica → Importa / aggiorna immagini locali**. Atlas rileva la cartella di Isaac; se necessario, selezionala e salva la configurazione prima di importare. Su Windows usa `tools/ResourceExtractor/ResourceExtractor.exe` e l’elenco dei file già inclusi nel gioco. Non è necessario scaricare sprite o pacchetti da altri siti.
+
+L’operazione gira in background e conserva soltanto le immagini necessarie in `local-assets`, nella cartella dati dell’app (`%LOCALAPPDATA%/IsaacAtlas` per l’eseguibile, cartella progetto per il sorgente). Il gioco e i salvataggi non vengono modificati. L’estrazione usa una cartella temporanea che viene rimossa alla fine. Ripeti l’importazione dopo una patch del gioco; le immagini precedenti restano disponibili se l’importazione fallisce.
+
+Oggetti e trinket vengono associati tramite gli ID dei file XML locali; gli altri segreti usano la relativa immagine achievement. I simboli di completamento sono ritagli visualizzati dal foglio originale, senza modificare i PNG. Sono icone degli obiettivi, **non una certificazione del relativo mark Normal/Hard**. Delirium mantiene un simbolo Atlas perché nel gioco il suo completamento cambia il foglio.
+
+Il repository, gli screenshot pubblici e lo ZIP non includono immagini ufficiali, XML estratti, cache o l’estrattore del gioco. I diritti degli asset restano ai rispettivi titolari. Se l’estrattore manca, l’importazione non riesce o un’immagine non è disponibile, resta la grafica Atlas.

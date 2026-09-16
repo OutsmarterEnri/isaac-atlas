@@ -37,3 +37,7 @@ Get-FileHash release\IsaacAtlas-VERSIONE-windows-x64.zip -Algorithm SHA256
 ```
 
 Confronta il risultato con il file `.sha256` associato. Un checksum verifica l’integrità dell’archivio, non sostituisce la fiducia nella fonte da cui lo scarichi.
+
+### Immagini ufficiali opzionali
+
+In Configurazione scegli **Importa / aggiorna immagini locali**. Richiede Windows e ResourceExtractor già presente nella cartella di Isaac. L’app mostra l’avanzamento e applica le immagini senza riavvio. Dopo una patch, ripeti l’operazione. L’importazione non richiede account e non scarica asset da Internet.
