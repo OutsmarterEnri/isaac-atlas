@@ -41,3 +41,19 @@ Confronta il risultato con il file `.sha256` associato. Un checksum verifica l�
 ### Immagini ufficiali opzionali
 
 In Configurazione scegli **Importa / aggiorna immagini locali**. Richiede Windows e ResourceExtractor già presente nella cartella di Isaac. L’app mostra l’avanzamento e applica le immagini senza riavvio. Dopo una patch, ripeti l’operazione. L’importazione non richiede account e non scarica asset da Internet.
+
+## Collaudo della prossima build
+
+Il desktop resta un canale supportato: evita l’installazione di Python, offre selezione cartelle nativa e finestra in primo piano. Conviene conservarlo e verificarlo come prodotto separato dal browser. I vecchi ZIP non sono prove della rc.4: prima di distribuire un nuovo eseguibile, compilare dai sorgenti aggiornati e registrare gli esiti seguenti.
+
+| Area | Prova richiesta |
+| --- | --- |
+| Avvio pulito | Windows senza Python; ZIP estratto in una cartella diversa, anche con spazi; WebView2 disponibile. |
+| Primo utilizzo | Nessuna configurazione o nota privata: messaggi corretti, sorgenti e slot rilevati, nessun percorso dello sviluppatore. |
+| Persistenza | Preferiti per tre slot, configurazione e note locali dopo chiusura, riapertura e sostituzione del pacchetto. |
+| Desktop | Ridimensionamento, due monitor, DPI 100/125/150%, vista compatta e ritorno alla navigazione. |
+| Live | Gioco aperto/chiuso, pausa, cambio piano, run ripresa, Bridge assente o precedente; niente dati obsoleti presentati come attuali. |
+| Isolamento | Browser e desktop su porte diverse; chiusura arresta il server; seconda istanza gestita. |
+| Packaging | ZIP privo di salvataggi, configurazioni, sprite e note private; fonti/licenze presenti; SHA256 verificato. |
+
+Stato rc.4: **prove del binario da eseguire**. Le verifiche Edge dei sorgenti non vengono conteggiate come test WebView2. Iniziare con un pacchetto candidato locale, poi una prerelease per tester; promuovere a release dopo il collaudo. Non serve compilare a ogni ritocco CSS, ma ogni pacchetto condiviso deve identificare la versione dei sorgenti.

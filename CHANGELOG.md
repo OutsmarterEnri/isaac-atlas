@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.0.0-rc.4 — 17 settembre 2026 · sorgenti
+
+- Navigazione ordinata per live, pianificazione, priorità e consultazione; icone per tutte le pagine.
+- Dashboard live a geometria stabile, registro separato e dettagli in dialogo.
+- Sequenze di run per personaggio, priorità «Da sbloccare», copertura cumulativa e ricompense deduplicate.
+- Icone personaggi e requisiti di accesso alle sfide.
+- «Cosa fa» in evidenza; note private opzionali, recupero automatico e lettura senza cache. Rimossa la voce sulla raccolta.
+- Include gli aggiornamenti Bridge 1.1.0 e assistente descritti sotto. Nessun nuovo binario distribuito; previsto collaudo desktop separato.
+
+## 1.0.0-rc.3 — sorgenti, collaudo in gioco da completare
+
+- Pagine dedicate Live Assistant, Registro live e Run Planner; dashboard desktop stabile, dettagli in dialogo. Preferiti «Da sbloccare» integrati nella sequenza di run; icone originali per personaggio e requisiti di accesso alle sfide. Planner con copertura cumulativa, priorità e deduplicazione delle ricompense.
+
+- Bridge 1.1.0: risorse, cariche degli attivi e identità del piano. Assistente in quattro sezioni, memoria temporanea delle stanze, consigli shop contestuali e sei combinazioni documentate con ingredienti, limiti e fonti. Suggerimenti ignorabili per piano. Dettagli e nuove prove in `docs/ASSISTANT.md`.
+
+- Aggiornamento Bridge 1.0.2: tinted rock e super tinted rock della stanza corrente, escluse quelle distrutte; avvisi e registro dedicati. Le forme della mappa 1–12 (incluse L e stanze grandi) non sospendono più tutti gli indizi; le adiacenze contano stanze distinte, non singole celle.
+
+- Bridge 1.0.1: enumerazione corretta delle stanze, invio della sola mappa visibile; tipo stanza limitato a visite o icone visibili. Vecchi candidati al 90% scartati.
+- Indizi geometrici qualitativi per Secret/Super Secret adiacenti alla stanza corrente, limitati a mappe note di stanze 1×1. Ultra Secret mostrata solo quando nota; previsione non implementata.
+- Cuori, batterie, sacchi, varianti di casse, rune e trinket distinti; identità stabile, prezzo da EntityPickup e fallback per pickup sconosciuti. Piedistalli nascosti da Curse of the Blind non identificati.
+- Registro per aggiunte/rimozioni/cambiamenti, conservato durante errori e menu, massimo 200 righe; avviso oltre 128 pickup. Rimangono possibili eventi mancati tra due campionamenti.
+- Corretto ID Diplopia (347), associazioni catalogo limitate agli oggetti, etichette tesoro/boss corrette.
+- Test Lua aggiornati, regressioni mappa/registro e prova browser con dati sintetici. Scheda manuale in `docs/TEST-LIVE.md`.
+- Nessun nuovo eseguibile compilato con questo aggiornamento dei sorgenti.
+
 ## 1.0.0-rc.1 — candidata alla 1.0
 
 - Configurazione delle cartelle nell’interfaccia e diagnostica esportabile senza percorsi personali.

@@ -6,9 +6,9 @@
 
 **Il tuo taccuino per gli sblocchi di The Binding of Isaac: Repentance+.**
 
-Trova quello che ti manca, prepara la prossima run e segui la partita dal browser.
+Segui la partita, scegli le tue priorità e pianifica le run per completare gli sblocchi.
 
-**1.0.0-rc.2 · Desktop Windows / Python 3.10+ · GPL-3.0-only**
+**1.0.0-rc.4 (sorgenti) · Desktop Windows / Python 3.10+ · GPL-3.0-only**
 
 [Installazione](#installazione) · [Configurazione](#configurazione) · [Modalità live](#modalità-live) · [Fonti](#fonti-e-attribuzioni) · [Problemi comuni](#problemi-comuni)
 
@@ -26,10 +26,36 @@ La candidata 1.0 aggiunge **configurazione guidata, pianificazione delle run, ev
 
 **Da sorgente:** restano validi i comandi Python descritti sotto. Non confondere una release candidate con un rilascio già pubblicato: gli archivi locali e il workflow di build non creano automaticamente una release GitHub.
 
+## Navigazione e novità della rc.4
+
+| Pagina, in ordine | Uso |
+| --- | --- |
+| **Live Assistant** | Dashboard per il secondo monitor: risorse, timer, occasioni e indizi dalla mappa visibile. |
+| **Run Planner** | Sequenza di percorsi per personaggio; priorità ai preferiti, ricompense non duplicate e obiettivi cumulativi. |
+| **Da sbloccare** | Lista prioritaria per profilo e slot; mantiene le selezioni precedenti di «Da provare». |
+| **Sblocchi** | Catalogo, ricerca e filtri, con completati e mancanti. |
+| **Per personaggio** | Consultazione con icone originali accanto ai nomi. |
+| **Sfide** | Requisiti per accedere alle sfide numerate, distinti dalle ricompense. |
+| **Registro live** | Ultime 200 osservazioni della Bridge, filtri e diagnostica separati dal dashboard. |
+
+Il live mantiene quattro riquadri di dimensione stabile a risoluzione desktop; nuovi segnali non allungano la pagina. Condizioni, fonti e tutti gli obiettivi si consultano nei dialoghi. A finestre piccole o zoom elevato, il layout torna scorrevole. Le pagine supportano link diretti e navigazione Indietro/Avanti.
+
+Con **Bridge 1.1.0**, l’assistente usa monete, bombe, chiavi, salute e cariche; ricorda gli oggetti nelle stanze visitate e distingue informazioni attuali da presenze da ricontrollare. Sei combinazioni documentate riportano ingredienti mancanti, limiti e fonti. Nessuna combinazione è dichiarata un loop infinito garantito.
+
+Il Run Planner minimizza il numero di percorsi **nel proprio modello standard**, assumendo vittorie e accessi disponibili. Non stima il tempo reale né garantisce Boss Rush, Hush, Mega Satan o portali casuali. I nuovi sblocchi salvati aggiornano il piano. Hard + Greedier è la modalità consigliata.
+
+Approfondimenti: [assistente e combinazioni](docs/ASSISTANT.md), [pagine e planner](docs/PAGES-PLANNER.md), [scheda live](docs/TEST-LIVE.md).
+
+### Stato di questa pubblicazione
+
+La rc.4 aggiorna i **sorgenti**. I precedenti eseguibili rc.1/rc.2 non incorporano queste modifiche. Il supporto desktop viene mantenuto, ma un nuovo ZIP richiede compilazione e collaudo dedicati: il push non pubblica automaticamente una release binaria.
+
+Verifiche locali: 41 test Python/Lua, suite JavaScript per planner e assistente, prove Edge di navigazione, descrizioni e geometria del dashboard a 1280×720, 1366×768 e 1920×1080. Questi controlli non sostituiscono il collaudo di una build PyInstaller/WebView2. [Piano di test desktop](docs/DESKTOP.md#collaudo-della-prossima-build).
+
 ## Cosa offre
 
 - **641 segreti di Repentance+** con requisiti, ricerca e collegamenti alle guide.
-- **Tre slot separati**: progressi e lista “Da provare” seguono il salvataggio selezionato.
+- **Tre slot separati**: progressi e lista “Da sbloccare” seguono il salvataggio selezionato.
 - **Sblocchi mancanti in primo piano**, con filtri per personaggio, boss e tipo di ricompensa.
 - **Rilevamento automatico** di Steam, librerie aggiuntive e cartelle note dei salvataggi.
 - **Casi d’uso e sinergie con fonti**, consultabili dai dettagli e dai preferiti.
@@ -191,7 +217,9 @@ Riavvia Isaac, abilita **Isaac Atlas Bridge** nel menu **Mods**, avvia una run e
 
 ### Registro diagnostico
 
-Apri **Registro di ciò che Atlas osserva** sotto il pannello live per vedere, riga per riga, le osservazioni ricevute dalla Bridge: stanza corrente e stato di pulizia, pickup a terra (con coordinate e prezzo quando disponibili), inventario, carte, eventi boss e candidati per Secret/Super Secret/Ultra Secret Room. Il registro è filtrabile e conserva al massimo 200 righe nella sessione del browser; non acquisisce screenshot, non legge la memoria del gioco e non modifica la partita.
+Apri la pagina **Registro live** dalla barra di navigazione per vedere stanza, pickup, prezzi, inventario ed eventi. La Bridge **1.1.0**, indicata nel pannello, distingue rune, trinket, cuori, batterie, sacchi e casse. Nomi non disponibili restano identificativi numerici; le pillole indicano il colore, non l'effetto sconosciuto. Il registro conserva 200 righe in memoria anche durante menu/errori, fino al ricaricamento della pagina. Registra cambiamenti, non semplici movimenti; la scomparsa non certifica una raccolta. Campionamento Bridge di un secondo e lettura ogni 1,5 secondi: eventi brevi possono sfuggire.
+
+Per provare questo aggiornamento, riavvia Atlas da sorgente e aggiorna Bridge a gioco chiuso. Gli eseguibili precedenti richiedono una nuova compilazione. La [scheda di collaudo](docs/TEST-LIVE.md) contiene azioni, risultati attesi e spazio per gli esiti.
 
 > Su slot nuovi, verifica nel gioco l’idoneità agli achievement quando usi mod. Atlas non certifica che una run possa sbloccare segreti e non modifica le regole del gioco.
 
@@ -203,7 +231,7 @@ Apri **Registro di ciò che Atlas osserva** sotto il pannello live per vedere, r
 | Dati della run | Personaggio, timer del gioco, numero del piano, difficoltà e slot attivo |
 | Obiettivi | Segreti mancanti associati al personaggio e compatibili con i filtri di difficoltà/modalità; i preferiti vengono prima |
 | Checklist | Spunte manuali temporanee, distinte dagli sblocchi registrati dal gioco |
-| Spunti dai preferiti | Note con almeno un oggetto coinvolto rilevato nell’inventario del primo giocatore; gli altri ingredienti e le condizioni vanno verificati |
+| Occasioni del piano | Quattro riquadri stabili: Qui e ora, Combinazioni, Prima di scendere, Esplorazione. Contatori e frecce per gli altri segnali; condizioni e fonti in un dialogo |
 
 Se la partita usa uno slot diverso da quello selezionato, Atlas mostra l’avviso e il comando per passare allo slot corretto. Non usa i progressi di uno slot per suggerire obiettivi di un altro.
 
@@ -246,7 +274,7 @@ Il planner non certifica l’accessibilità di ogni area sul salvataggio: i meto
 - **Ricerca:** cerca nome, boss, requisito o numero del segreto. Premi `/` per portare il cursore nel campo.
 - **Filtri:** combina personaggio, obiettivo e tipo di ricompensa; “Azzera filtri” ripristina la vista.
 - **Per personaggio / Sfide:** consulta gli obiettivi delle due categorie.
-- **Da provare:** usa il segnalibro sulle schede. I preferiti rimangono visibili anche dopo lo sblocco, insieme alle note disponibili.
+- **Da sbloccare:** usa il segnalibro sulle schede. I preferiti rimangono visibili anche dopo lo sblocco, insieme alle note disponibili.
 - **Dettaglio:** apri una scheda per requisito, testo originale, eventuali note e link alle fonti.
 - **Preferiti trasferibili:** esporta lo slot corrente e importa il file sul browser/PC di destinazione. L’importazione aggiunge gli ID validi allo slot collegato, senza cancellare i preferiti esistenti.
 - **Sincronizzazione:** il salvataggio viene riletto ogni **5 secondi**; il pulsante di aggiornamento richiede una nuova lettura.
@@ -378,4 +406,14 @@ Il repository, gli screenshot pubblici e lo ZIP non includono immagini ufficiali
 
 ## Assistenza contestuale della run
 
-La modalità live aiuta a scegliere tra le opportunità che la run offre, senza imporre un percorso. Pickup speciali, combinazioni interessanti e stanze segrete vengono mostrati con una confidenza e una motivazione. Un segnale può essere confermato, molto probabile, probabile, possibile o non valutabile; non modifica la mappa, non apre porte e non certifica da solo un achievement.
+La modalità live evidenzia pickup speciali e indizi dalla mappa visibile. Le stanze segrete note sono distinte dalle ipotesi. Secret/Super Secret hanno indizi qualitativi bassi o medi con direzione e motivazione: non sono percentuali calibrate. L'euristica considera solo celle adiacenti alla stanza corrente, ricostruendo anche stanze grandi, strette e a L dalla mappa visibile; non verifica muri, ostacoli o stanze inesplorate. Si sospende per geometrie non supportate e Curse of the Lost. L'Ultra Secret viene mostrata quando nota; la previsione della sua posizione non è implementata. I candidati delle vecchie Bridge, ricavati da dati nascosti, vengono scartati.
+
+Con Bridge 1.1.0, tinted rock e super tinted rock della stanza corrente compaiono fra i segnali e nel registro, con posizione. I resti delle rocce distrutte sono esclusi; nessuna ricompensa viene dedotta.
+
+## Descrizioni degli oggetti
+
+«Cosa fa» precede i requisiti nel dettaglio. Le descrizioni mancanti vengono ricaricate quando si apre la scheda; il pulsante Aggiorna rilegge anche le note, senza usare la cache. La voce «Raccolto almeno una volta» è stata rimossa dalla scheda.
+
+La distribuzione include **sei sintesi originali**, non un database completo degli effetti. Il server può integrare `local-assets/notes.json` con descrizioni installate localmente; quel file è escluso da Git, dal pacchetto e dall’esportazione pubblica. Le fonti restano visibili. Le 425 descrizioni presenti nell’ambiente di sviluppo **non sono incluse nel repository**: senza note locali, una descrizione assente rimanda alla wiki.
+
+Il file opzionale usa un oggetto `entries` indicizzato per numero del segreto. Ogni voce contiene `description` (lista di testi), `language` e `descriptionSource` (`title`, `url` HTTPS). Le sintesi distribuite hanno precedenza sulle note locali. Per il desktop, la posizione è `%LOCALAPPDATA%/IsaacAtlas/local-assets/notes.json`; per i sorgenti è `local-assets/notes.json` nella cartella dell’app, salvo `ATLAS_DATA_DIR`.

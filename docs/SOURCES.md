@@ -1,5 +1,16 @@
 # Indice delle fonti
 
+## Diagnostica live, revisione rc.3
+
+- [Level: GetRooms e GetRoomByIdx](https://wofsauge.github.io/IsaacDocs/rep/Level.html): lista dei descrittori distinta dagli indici della griglia.
+- [RoomDescriptor](https://wofsauge.github.io/IsaacDocs/rep/RoomDescriptor.html): visibilità, visite, indice e dimensioni della griglia.
+- [PickupVariant](https://wofsauge.github.io/IsaacDocs/rep/enums/PickupVariant.html): tipi di pickup e varianti di casse.
+- [EntityPickup](https://wofsauge.github.io/IsaacDocs/rep/EntityPickup.html): prezzo del pickup, accessibile dopo la conversione da Entity.
+- [ItemConfigCard](https://wofsauge.github.io/IsaacDocs/rep/ItemConfig_Card.html): distinzione carte/rune con IsRune.
+- [RoomType](https://wofsauge.github.io/IsaacDocs/rep/enums/RoomType.html): etichette dei tipi di stanza.
+
+Gli indizi geometrici di Atlas sono un'euristica originale e limitata: queste fonti documentano le API, non convalidano percentuali di successo. La versione rc.3 non fornisce percentuali né previsioni Ultra Secret non rivelate.
+
 [← README](../README.md#fonti-e-attribuzioni)
 
 ## Casi d’uso distribuiti
@@ -59,3 +70,15 @@ Le sintesi originali in `notes.json` riportano direttamente fonte, ambito e data
 
 - [IsaacDocs — Getting Started](https://wofsauge.github.io/IsaacDocs/rep/faq/GettingStarted.html): ResourceExtractor e aggiornamento dopo patch.
 - Mapping delle immagini verificato sui file `items.xml`, `achievements.xml` e `completion_widget.anm2` della propria installazione. Questi file non vengono redistribuiti.
+
+## Rocce e forme della mappa
+
+- [GridEntityType](https://wofsauge.github.io/IsaacDocs/rep/enums/GridEntityType.html): GRID_ROCKT e GRID_ROCK_SS.
+- [GridEntity.State](https://wofsauge.github.io/IsaacDocs/rep/GridEntity.html#state): stato 2 per le rocce distrutte.
+- [RoomShape](https://wofsauge.github.io/IsaacDocs/rep/enums/RoomShape.html): forme standard della mappa.
+
+## Regole dell’assistente contestuale
+
+Fonti per D20, Diplopia, Wild Card, Jera, Clear Rune, Blank Card, 2 of Diamonds, Habit e Sharp Plug, con differenze fra versioni e limiti: [registro delle fonti e delle combinazioni](ASSISTANT.md). Le schede sono sintesi originali; non vengono distribuite copie delle pagine consultate.
+
+Requisiti di accesso alle sfide e modello dei percorsi: [Pagine e planner](PAGES-PLANNER.md#fonti).

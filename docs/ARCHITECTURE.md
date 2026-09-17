@@ -36,7 +36,9 @@ Un checksum valido indica integrità del file, non autenticità dell'acquisto o 
 
 ### Stato live
 
-La Bridge 1.0 usa `schema: 2`; il lettore continua ad accettare schema 1 con funzionalità live ridotte. Oltre allo stato della run, esporta `room` (indice, tipo e stanza pulita), `pickups` (tipo, subtype, coordinate e prezzo), `secretCandidates`, eventi, inventario e carte. Il servizio valida e limita ogni campo prima di aggiungere `character`, `slot`, `age` in secondi e `status`. La UI offre un registro filtrabile delle osservazioni; conserva solo le ultime 200 righe nella memoria del browser e non legge pixel o memoria del processo.
+La Bridge 1.1.0 usa `schema: 2`; il lettore continua ad accettare schema 1 con funzionalità ridotte. Esporta `room` (indice, listIndex, tipo, clear), `pickups` (identità, tipo, subtype, variante, coordinate, prezzo, hidden), `pickupsTruncated` e `visibleRooms`. Enumera `GetRooms():Get(i)`; legge Data solo dopo il filtro visita/visibilità, e il tipo solo se visitata o con icona visibile. Curse of the Lost sopprime la mappa; Curse of the Blind nasconde l'ID dei piedistalli. La lista pickup è limitata a 128 con segnalazione esplicita.
+
+Il servizio valida il contenuto e produce `secretCandidates` con stato `known`/`candidate`, forza qualitativa e motivazione. I candidati delle vecchie Bridge vengono scartati. L'euristica espande le 12 forme standard in celle della griglia e conta stanze distinte adiacenti alla stanza corrente; nessuna percentuale calibrata e nessuna previsione Ultra Secret. Solo forme sconosciute o fuori griglia sospendono le stime. `dist/live-core.js` confronta le identità dei pickup ignorando gli spostamenti, distingue piano/stanza, conserva al massimo 200 righe e mantiene la cronologia durante errori/menu. Nessuna scrittura del registro su disco.
 
 - `frames` viene da `Game().TimeCounter`; la visualizzazione converte 30 frame in un secondo.
 - `run` è un identificatore di sessione ottenuto dal seed e dal tempo di avvio rilevato dalla mod; serve ad azzerare la checklist. Non identifica un account.
@@ -96,3 +98,9 @@ Schema 2 aggiunge `events`, `bridgeVersion`, `stageType`, `bossRushLimit`, `hush
 
 
 Il registro diagnostico lato browser conserva solo le ultime osservazioni della sessione e non viene scritto nei salvataggi: mostra cambio stanza, pickup e segnali della mappa derivati dal singolo snapshot.
+
+Bridge 1.0.2 esporta `rocks` (kind, index, x, y), leggendo GetGridEntity solo nella stanza corrente: GRID_ROCKT / GRID_ROCK_SS e State diverso da 2. Il backend valida fino a 448 elementi e coordinate finite; il frontend confronta indice e tipo per registrare presenza/rimozione.
+
+### Assistente del piano
+
+`assistant-rules.js` contiene sei regole editoriali con fonti; `assistant-core.js` conserva in memoria al massimo 128 stanze e 256 pickup per stanza, distingue osservazioni correnti e passate, valuta risorse e ingredienti. `assistant-ui.js` presenta le quattro sezioni e conserva i dettagli aperti durante il polling. Nessun nuovo archivio su disco. Bridge 1.1.0 aggiunge `resources`, `actives` e `floorId`, validati in `live.py`; assenza dei campi nelle vecchie Bridge significa dato sconosciuto. La memoria viene azzerata al cambio slot, run o piano e al riavvolgimento del timer. Vedi [limiti e fonti](ASSISTANT.md).

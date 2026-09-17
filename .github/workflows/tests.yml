@@ -20,3 +20,5 @@ jobs:
         with:
           node-version: '22'
       - run: node tests/planner.cjs
+      - run: node tests/live.cjs
+      - run: node tests/assistant.cjs

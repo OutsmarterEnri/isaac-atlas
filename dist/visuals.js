@@ -51,3 +51,11 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-objective]
 
 // An unavailable local image leaves the original illustration visible.
 document.addEventListener('error',e=>{if(e.target.tagName==='IMG'&&e.target.closest('.reward-art'))e.target.remove();},true);
+// Local character portraits when available; distinct original emblems otherwise.
+function characterIcon(name){
+ const a=localArtwork.characters?.[name],url=localImageURL(a?.url);
+ if(url)return `<img class="character-icon" src="${url}" alt="" width="36" height="36">`;
+ const base=name.replace(/^Tainted /,'').replace(/^The /,''),tainted=name.startsWith('Tainted ');
+ const motifs={Cain:'<path d="M10 13h9v6h-9m0-6 15-5"/>',Magdalene:'<path d="M8 20V11q10-13 20 0v9M9 9l-3 17m21-17 3 17"/>',Judas:'<path d="M7 9h22M11 8V3h14v5"/>',Azazel:'<path d="m10 9-4-7v13m20-6 4-7v13M9 24l-7-5v10l10-2m15-3 7-5v10l-10-2"/>',Samson:'<path d="M7 10h22M8 7h20M26 10l7 9"/>',Eve:'<path d="M7 20V9q11-13 22 0v17l-7-5M7 9l10 5"/>',Lost:'<path d="m8 26 4 6 6-6 6 6 4-6"/>',Forgotten:'<path d="M11 22h14v8H11zm4 0v7m6-7v7"/>',Keeper:'<path d="M8 16h7m6 0h7M13 25h10m-7-2v5m4-5v5"/>',Lilith:'<path d="M7 13h22v6H7z"/>',Bethany:'<path d="m17 2 5 6-4 4-4-4z"/>','???':'<path d="M12 25h12m-9-3v6m6-6v6"/>',Apollyon:'<path d="m9 8-4-5 2 13m20-8 4-5-2 13M18 23v7"/>',Eden:'<path d="m7 11 2-8 6 4 4-5 3 5 6-3 2 9"/>',Lazarus:'<path d="M8 10 17 4l11 7M11 24l14 3"/>'};
+ return `<svg class="character-icon ${tainted?'tainted-icon':''}" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><ellipse cx="18" cy="18" rx="11" ry="12"/><circle cx="13" cy="17" r="1.5"/><circle cx="23" cy="17" r="1.5"/>${motifs[base]||'<path d="M12 25q6 4 12 0"/>'}${tainted?'<path d="m3 31 6-6M27 9l6-6"/>':''}</svg>`;
+}

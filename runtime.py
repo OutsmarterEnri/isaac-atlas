@@ -1,7 +1,7 @@
 """Resource and private user-data locations for source and frozen builds."""
 from pathlib import Path
 import os, sys
-VERSION = '1.0.0-rc.2'
+VERSION = '1.0.0-rc.4'
 ROOT = Path(__file__).resolve().parent
 
 def data_dir():

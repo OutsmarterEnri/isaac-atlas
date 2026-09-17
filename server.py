@@ -8,11 +8,29 @@ import argparse, hashlib, json, os, struct, webbrowser, secrets
 from discovery import save_path, source_info
 from live import live_state
 
-from runtime import ROOT, VERSION
+from runtime import ROOT, VERSION, data_dir
 import local_art
 from settings import read_settings, write_config, install_bridge, diagnostics
 SESSION_TOKEN = secrets.token_urlsafe(32)
 CRC_TABLE = json.loads((ROOT / 'crc_table.json').read_text())
+
+def description_notes():
+    """Merge optional private descriptions; bundled editorial notes take precedence."""
+    bundled=json.loads((ROOT/'dist/data/notes.json').read_text(encoding='utf-8'))
+    local={}
+    try:
+        path=data_dir()/'local-assets/notes.json'
+        if path.stat().st_size>4_000_000:raise ValueError('Note troppo grandi')
+        raw=json.loads(path.read_text(encoding='utf-8'))['entries']
+        if not isinstance(raw,dict):raise ValueError('Note non valide')
+        for key,note in raw.items():
+            if not key.isdigit() or not 1<=int(key)<=641 or not isinstance(note,dict):continue
+            lines=note.get('description');source=note.get('descriptionSource',{})
+            if not isinstance(lines,list) or not lines or not all(isinstance(x,str) and len(x)<=10000 for x in lines):continue
+            if not isinstance(source,dict) or not isinstance(source.get('url'),str) or not source['url'].startswith('https://'):continue
+            local[key]={'description':lines[:100],'language':'it' if note.get('language')=='it' else 'en','descriptionSource':{'title':str(source.get('title','Fonte descrizione locale')),'url':source['url']},'interactions':[]}
+    except (OSError,ValueError,KeyError,TypeError):pass
+    return {**bundled,'entries':{**local,**bundled.get('entries',{})}}
 
 def parse_save(data):
     if not 2048 <= len(data) <= 262144 or data[:16] != b'ISAACNGSAVE09R  ':
@@ -66,6 +84,8 @@ class Handler(SimpleHTTPRequestHandler):
         if self.headers.get('Sec-Fetch-Site') == 'cross-site':
             self.send_error(403); return
         route = urlsplit(self.path).path
+        if route == '/data/notes.json':
+            self.respond(200,description_notes());return
         if route == '/api/art/manifest':
             self.respond(200,local_art.manifest());return
         if route == '/api/art/status':

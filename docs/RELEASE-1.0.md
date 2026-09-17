@@ -1,4 +1,6 @@
-# Isaac Atlas 1.0.0-rc.2
+# Isaac Atlas 1.0.0-rc.3 — sorgenti
+
+Questa revisione aggiorna la diagnostica live e la Bridge a 1.0.2. Il nuovo eseguibile non è ancora compilato: i pacchetti rc.2 non contengono queste correzioni. Prima della release binaria seguire [la scheda di collaudo](TEST-LIVE.md), poi compilare e provare il pacchetto corrispondente.
 
 ## In breve
 
@@ -6,7 +8,7 @@ Candidata alla prima versione desktop, con importazione opzionale delle immagini
 
 ## Download e avvio
 
-Pacchetto previsto: `IsaacAtlas-1.0.0-rc.2-windows-x64.zip`, con file `.sha256` associato. Estrai tutta la cartella e avvia `IsaacAtlas.exe`. Richiede Windows x64 e WebView2; Python è incluso. Le istruzioni complete sono in [DESKTOP.md](DESKTOP.md).
+Pacchetto da generare: `IsaacAtlas-1.0.0-rc.3-windows-x64.zip`, con file `.sha256` associato. Dopo la compilazione, estrai tutta la cartella e avvia `IsaacAtlas.exe`. Richiede Windows x64 e WebView2; Python è incluso. Le istruzioni complete sono in [DESKTOP.md](DESKTOP.md).
 
 Per aggiornare da una versione precedente della Bridge, chiudi Isaac e usa **Configurazione e diagnostica → Aggiorna Bridge**, poi riavvia il gioco. Il lettore accetta ancora la Bridge precedente, ma i nuovi eventi richiedono schema 2.
 

@@ -9,6 +9,10 @@ FILES=['CONTRIBUTING.md', 'SECURITY.md', 'docs/ARCHITECTURE.md', 'docs/SOURCES.m
        'tests/test_atlas.py','tests/browser.cjs','tests/README.md','scripts/prepare_public.py']
 FILES += ['tests/art-browser.cjs','local_art.py','tests/test_local_art.py','dist/visuals.js','docs/RELEASE-1.0.md','dist/credits.html','runtime.py', 'settings.py', 'desktop.py', 'requirements-desktop.txt', 'CHANGELOG.md', 'docs/DESKTOP.md', 'docs/ROADMAP-1.0.md', 'dist/planner-core.js', 'dist/planner.js', 'dist/settings.js', 'tests/test_release.py', 'tests/test_bridge.py', 'tests/planner.cjs', 'tests/v1-browser.cjs', 'scripts/build_windows.py', '.github/workflows/windows-build.yml', '.github/workflows/tests.yml', 'dist/data/notes.json']
 
+FILES += ['dist/live-core.js','tests/live.cjs','tests/live-browser.cjs','tests/test_live_signals.py','docs/TEST-LIVE.md']
+
+FILES += ['tests/test_descriptions.py','docs/PAGES-PLANNER.md','dist/pages.js','dist/challenges.js','dist/assistant-rules.js','dist/assistant-core.js','dist/assistant-ui.js','tests/assistant.cjs','docs/ASSISTANT.md']
+
 def export(destination):
     dest=Path(destination).resolve()
     if dest==ROOT or ROOT in dest.parents:raise ValueError('La destinazione deve essere esterna alla cartella sorgente.')

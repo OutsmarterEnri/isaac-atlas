@@ -29,21 +29,58 @@ local function snapshot(state)
     if game:GetNumPlayers() < 1 then return end
     observe()
     local player = Isaac.GetPlayer(0)
+    local resources = {coins=player:GetNumCoins(),bombs=player:GetNumBombs(),keys=player:GetNumKeys(),
+        hearts=player:GetHearts(),maxHearts=player:GetMaxHearts(),soulHearts=player:GetSoulHearts()}
+    local actives = {}
+    for slot = 0, 3 do
+        local id = player:GetActiveItem(slot)
+        if id > 0 then actives[#actives+1] = {slot=slot,id=id,charge=player:GetActiveCharge(slot),battery=player:GetBatteryCharge(slot)} end
+    end
     local items, cards = {}, {}
-    local pickups, secretCandidates = {}, {}
+    local pickups, rocks = {}, {}
+    local currentRoom = game:GetRoom()
+    for i = 0, math.min(currentRoom:GetGridSize(),448) - 1 do
+        local grid = currentRoom:GetGridEntity(i)
+        if grid and grid.State ~= 2 then
+            local kind = grid:GetType() == GridEntityType.GRID_ROCKT and "tinted" or
+                grid:GetType() == GridEntityType.GRID_ROCK_SS and "super_tinted" or nil
+            if kind then rocks[#rocks + 1] = {kind=kind,index=i,x=grid.Position.X,y=grid.Position.Y} end
+        end
+    end
     local variants = {
         [PickupVariant.PICKUP_COLLECTIBLE]="collectible", [PickupVariant.PICKUP_TAROTCARD]="card",
-        [PickupVariant.PICKUP_PILL]="pill", [PickupVariant.PICKUP_TRINKET]="collectible",
+        [PickupVariant.PICKUP_PILL]="pill", [PickupVariant.PICKUP_TRINKET]="trinket",
         [PickupVariant.PICKUP_COIN]="coin", [PickupVariant.PICKUP_KEY]="key",
         [PickupVariant.PICKUP_BOMB]="bomb", [PickupVariant.PICKUP_CHEST]="chest",
         [PickupVariant.PICKUP_HEART]="heart"
     }
+    local extraVariants = {PICKUP_GRAB_BAG="bag", PICKUP_LIL_BATTERY="battery",
+        PICKUP_BOMBCHEST="chest", PICKUP_SPIKEDCHEST="chest", PICKUP_ETERNALCHEST="chest",
+        PICKUP_MIMICCHEST="chest", PICKUP_OLDCHEST="chest", PICKUP_WOODENCHEST="chest",
+        PICKUP_MEGACHEST="chest", PICKUP_HAUNTEDCHEST="chest", PICKUP_LOCKEDCHEST="chest",
+        PICKUP_REDCHEST="chest", PICKUP_MOMSCHEST="chest", PICKUP_BIGCHEST="chest"}
+    for key, kind in pairs(extraVariants) do
+        if PickupVariant[key] then variants[PickupVariant[key]] = kind end
+    end
+    local totalPickups = 0
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
-        if entity.Type == EntityType.ENTITY_PICKUP and variants[entity.Variant] then
-            local price = 0
-            pcall(function() price = entity.Price or 0 end)
-            pickups[#pickups + 1] = {kind=variants[entity.Variant], subtype=entity.SubType,
-                x=entity.Position.X, y=entity.Position.Y, price=price}
+        if entity.Type == EntityType.ENTITY_PICKUP then
+            totalPickups = totalPickups + 1
+            if #pickups < 128 then
+                local pickup = entity:ToPickup()
+                local kind = variants[entity.Variant] or "unknown"
+                if kind == "card" then
+                    local config = Isaac.GetItemConfig():GetCard(entity.SubType)
+                    if config and config:IsRune() then kind = "rune" end
+                end
+                -- Hidden pedestal contents must not become advice during Curse of the Blind.
+                local hidden = kind == "collectible" and
+                    (game:GetLevel():GetCurses() & LevelCurse.CURSE_OF_BLIND) ~= 0
+                pickups[#pickups + 1] = {kind=kind, subtype=hidden and 0 or entity.SubType,
+                    hidden=hidden, id=tostring(entity.InitSeed) .. ":" .. tostring(entity.Index),
+                    variant=entity.Variant, x=entity.Position.X, y=entity.Position.Y,
+                    price=pickup and pickup.Price or 0}
+            end
         end
     end
     local level = game:GetLevel()
@@ -54,18 +91,22 @@ local function snapshot(state)
         room.type = game:GetRoom():GetType()
         room.clear = game:GetRoom():IsClear()
     end)
-    if current and current.GridIndex then
-        for i = 0, level:GetRoomCount() - 1 do
-            local desc = level:GetRoomByIdx(i)
-            if desc and desc.Data and desc.Data.Type then
-                local roomType = desc.Data.Type
-                local kind = roomType == RoomType.ROOM_SECRET and "secret" or
-                    roomType == RoomType.ROOM_SUPERSECRET and "supersecret" or
-                    roomType == RoomType.ROOM_ULTRASECRET and "ultrasecret" or nil
-                if kind and desc.GridIndex ~= current.GridIndex then
-                    secretCandidates[#secretCandidates + 1] = {kind=kind, confidence=0.9,
-                        direction="mappa", index=desc.GridIndex,
-                        reason="Tipo stanza esposto dal descrittore del livello"}
+    room.listIndex = current and current.ListIndex or -1
+    local visibleRooms = {}
+    local mapSuppressed = (level:GetCurses() & LevelCurse.CURSE_OF_THE_LOST) ~= 0
+    if not mapSuppressed then
+        local rooms = level:GetRooms()
+        for i = 0, rooms.Size - 1 do
+            local desc = rooms:Get(i)
+            local flags = desc.DisplayFlags or 0
+            local visited = (desc.VisitedCount or 0) > 0
+            -- Never inspect hidden room Data. Position/shape only for visible rooms;
+            -- type only when visited or when its icon is displayed.
+            if (visited or flags > 0) and desc.Data and desc.GridIndex >= 0 then
+                local same = level:GetRoomByIdx(desc.GridIndex)
+                if same and same.ListIndex == desc.ListIndex then
+                    visibleRooms[#visibleRooms + 1] = {index=desc.GridIndex,
+                        shape=desc.Data.Shape, type=(visited or (flags & 4) ~= 0) and desc.Data.Type or 0}
                 end
             end
         end
@@ -79,7 +120,9 @@ local function snapshot(state)
         if card > 0 then cards[#cards + 1] = card end
     end
     sequence = sequence + 1
-    mod:SaveData(json.encode({schema=2, bridgeVersion="1.0.0", state=state, sequence=sequence, run=run,
+    mod:SaveData(json.encode({schema=2, bridgeVersion="1.1.0", state=state, sequence=sequence, run=run,
+        resources=resources,actives=actives,
+        floorId=tostring(level:GetStage()) .. ":" .. tostring(level:GetStageType()) .. ":" .. tostring(level:GetDungeonPlacementSeed()),
         frames=math.max(0, game.TimeCounter), playerType=player:GetPlayerType(),
         difficulty=game.Difficulty, stage=game:GetLevel():GetStage(),
         challenge=game.Challenge, custom=game:GetSeeds():IsCustomRun(),
@@ -87,7 +130,8 @@ local function snapshot(state)
         stageType=game:GetLevel():GetStageType(), bossRushLimit=game.BossRushParTime,
         hushLimit=game.BlueWombParTime, megaDoor=game:GetStateFlag(GameStateFlag.STATE_MEGA_SATAN_DOOR_OPENED),
         motherDoor=game:GetStateFlag(GameStateFlag.STATE_MOTHER_HEART_DOOR_OPENED), ascent=game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH),
-        pickups=pickups, secretCandidates=secretCandidates, room=room}))
+        pickups=pickups, rocks=rocks, pickupsTruncated=totalPickups > 128,
+        visibleRooms=visibleRooms, mapSuppressed=mapSuppressed, room=room}))
 end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, continued)
     active, finished, lastWrite, sequence = true, false, -1000, 0

@@ -1,0 +1,31 @@
+const assert=require('node:assert/strict');
+const {Assistant}=require('../dist/assistant-core.js');
+const {rules}=require('../dist/assistant-rules.js');
+const base={status:'running',run:'a',slot:1,stage:1,stageType:0,floorId:'one',frames:100,players:1,character:'Isaac',room:{index:84,listIndex:0,type:2},items:[],cards:[],actives:[],pickups:[],rocks:[],secretCandidates:[],resources:{coins:10,bombs:1,keys:0,hearts:2,maxHearts:6,soulHearts:0}};
+const diplopia={id:'d',kind:'collectible',subtype:347,price:15,x:1,y:2};
+const a=new Assistant();
+function model(data){a.observe(data,'profile');return a.model(data);}
+let m=model({...base,cards:[80],pickups:[diplopia]});
+assert(m.now.some(e=>e.title==='Diplopia'&&e.badge==='Risparmia prima'&&e.checks[0].includes('mancano 5')));
+assert(m.combos.some(e=>e.id==='combo:diplopia-wild'&&e.badge==='Ingredienti visti sul piano'));
+m=model({...base,frames:150,room:{index:85,listIndex:1,type:1}});
+assert(m.later.some(e=>e.title==='Diplopia'&&e.checks.some(c=>c.includes('non confermati'))));
+m=model({...base,frames:160,pickups:[]});assert(!m.now.some(e=>e.title==='Diplopia'));assert(!m.later.length);
+m=model({...base,frames:170,pickups:[diplopia]});a.ignore(m.now[0].id);assert.equal(a.model(base).now.length,0);
+a.restore();assert.equal(a.model(base).now.length,1);
+m=model({...base,frames:180,floorId:'two'});assert.equal(m.roomCount,1);assert.equal(m.later.length,0);assert.equal(m.ignored,0);
+m=model({...base,frames:190,slot:2});assert.equal(m.later.length,0);
+m=model({...base,frames:200,items:[166,584]});assert(m.combos.find(e=>e.id==='combo:d20').blocked);
+m=model({...base,frames:201,items:[166],character:'Bethany'});assert(m.combos.find(e=>e.id==='combo:d20').blocked);
+m=model({...base,frames:202,pickups:[{...diplopia,hidden:true}]});assert(!m.now.length);assert(!m.combos.length);
+m=model({...base,frames:203,pickups:[{...diplopia,kind:'trinket',subtype:166}]});assert(!m.combos.length);
+m=model({...base,frames:204,items:[286],cards:[33]});assert(!m.combos.some(c=>c.badge==='Ingredienti posseduti'),'Blank Card + Jera is not a supported combo');
+m=model({...base,frames:205,items:[347],cards:[80],resources:null});assert(m.combos.some(c=>c.badge==='Ingredienti posseduti'));assert.equal(m.resources,null);
+m=model({...base,frames:206,items:[347],cards:[80],players:2});assert.equal(m.combos.length,0);
+m=model({...base,frames:207,pickups:[diplopia]});m=model({...base,frames:208,pickups:[],pickupsTruncated:true});assert(m.now.some(e=>e.title==='Diplopia'));
+m=model({...base,frames:209,pickups:[]});assert(!m.now.length);
+m=model({...base,frames:210,rocks:[{kind:'tinted',index:20,x:10,y:20}],secretCandidates:[{kind:'secret',index:85,status:'candidate',strength:'media',direction:'est',reason:'test'}]});
+assert(m.now[0].checks[0].includes('sola bomba'));assert(m.exploration[0].checks[0].includes('Ultima bomba'));
+const before=a.rooms.size;a.observe({status:'error'},'profile');assert.equal(a.rooms.size,before);
+for(const rule of rules){assert(rule.sources.length);assert(rule.limits.length);assert(rule.reviewed);for(const s of rule.sources)assert(new URL(s.url).hostname==='bindingofisaacrebirth.wiki.gg');}
+console.log('PASS assistant: floor memory, revisit, reset, affordability, partial snapshots, missing ingredients, incompatible synergies, typed IDs, resource competition and sourced rules.');
